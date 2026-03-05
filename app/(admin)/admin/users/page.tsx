@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getAdminSession } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
+import AdminSearch from "@/components/admin/AdminSearch";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 
 export default async function AdminUsersPage({ searchParams }: { searchParams: Promise<{ page?: string; search?: string }> }) {
@@ -42,17 +43,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
         </div>
 
         {/* Search */}
-        <form style={{ marginBottom: 20 }}>
-          <div style={{ display: "flex", gap: 10 }}>
-            <input
-              name="search"
-              defaultValue={search}
-              placeholder="Search by name, email, or phone..."
-              style={{ flex: 1, backgroundColor: "#12152a", border: "1px solid #2a2d4a", borderRadius: 10, padding: "10px 16px", color: "#fff", fontSize: "1.4rem", outline: "none", fontFamily: "inherit" }}
-            />
-            <button type="submit" className="btn btn-primary" style={{ height: 44, paddingInline: 20, fontSize: "1.3rem" }}>Search</button>
-          </div>
-        </form>
+        <AdminSearch placeholder="Search by name, email, or phone..." />
 
         {/* Table */}
         <div style={{ backgroundColor: "#12152a", border: "1px solid #2a2d4a", borderRadius: 16, overflow: "hidden" }}>
