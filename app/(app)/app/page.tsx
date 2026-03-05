@@ -158,7 +158,7 @@ export default async function AppDashboard() {
 
       <footer className="app-footer">
         <p>&copy; Copyright 2025 RoadReady — A Binary Solutions Company.</p>
-        <p>Designed By ClaroCreatives</p>
+        <p>Designed By Binary Solutions</p>
       </footer>
     </div>
   );
