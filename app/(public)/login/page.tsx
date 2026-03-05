@@ -64,7 +64,7 @@ export default function LoginPage() {
             Tsindira Provisoire<br/>Ukoze Rimwe Gusa
           </h2>
           <p className="text-white/70 text-[1.4rem] leading-[1.6] max-w-[36ch] mx-auto">
-            Imenyereze ibizami byose ukoresheje telefoni yawe — aho uwo aribwo wese, igihe cyose.
+            Imenyereze ibizami byose ukoresheje telefoni yawe — aho waba uri hose, igihe cyose.
           </p>
         </div>
 

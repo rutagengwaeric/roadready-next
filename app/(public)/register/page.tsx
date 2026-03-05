@@ -68,7 +68,7 @@ export default function RegisterPage() {
             Tangira Ubutumire<br/>Bwawe Ubu Nonaha
           </h2>
           <p className="text-white/70 text-[1.4rem] leading-[1.6] max-w-[36ch] mx-auto">
-            Fungura konti uhabwe amahirwe yo kwimenyereza ibizami by&apos;inzira — aho uwo aribwo wese.
+            Fungura konti uhabwe amahirwe yo kwimenyereza ibizami by&apos;inzira — aho waba uri hose
           </p>
         </div>
 
