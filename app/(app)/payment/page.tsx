@@ -201,7 +201,7 @@ export default function PaymentPage() {
 
       <footer className="app-footer">
         <p>&copy; Copyright 2025 RoadReady - A Binary Solutions Company.</p>
-        <p>Designed By ClaroCreatives</p>
+        <p>Designed By Binary Solutions</p>
       </footer>
 
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>

@@ -246,3 +246,24 @@ button {
   50% { transform: scale(1.2); background-color: #6793fb; }
   100% { transform: scale(0.8); background-color: #b3d4fc; }
 }
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ===== TEST CARD ===== */
+.test-card {
+  display: block;
+  background: #fff;
+  border: 1px solid #e8e4ff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+  color: inherit;
+}
+.test-card:hover {
+  border-color: #5d6eff;
+  box-shadow: 0 6px 20px rgba(93,110,255,0.12);
+}
