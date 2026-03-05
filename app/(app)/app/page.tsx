@@ -33,21 +33,33 @@ export default async function AppDashboard() {
     <div className="min-h-screen bg-[#f9f5ff] flex flex-col">
 
       {/* Top bar */}
-      <div className="bg-white border-b border-gray-100 sticky top-0 z-40 shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
-        <div className="max-w-[640px] mx-auto px-4 h-[60px] flex items-center justify-between">
-          <Image src="/assets/images/icons/full logo.svg" alt="RoadReady" width={110} height={38} className="object-contain" />
-          <div className="flex items-center gap-3">
-            <span className="text-[1.3rem] text-[#202842]/60">
-              Muraho, <strong className="text-[#202842] font-semibold">{user.username}</strong>
+      <header className="bg-white border-b border-gray-100 sticky top-0 z-40" style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.06)" }}>
+        <div className="max-w-[640px] mx-auto px-4 h-[60px] flex items-center justify-between gap-3">
+          <Image src="/assets/images/icons/full logo.svg" alt="RoadReady" width={110} height={38} className="object-contain shrink-0" />
+
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="w-8 h-8 rounded-full bg-[#eef0ff] shrink-0 grid place-items-center">
+              <span className="text-[1.3rem] font-bold text-[#5d6eff] leading-none select-none">
+                {user.username.charAt(0).toUpperCase()}
+              </span>
+            </div>
+            <span className="text-[1.3rem] text-[#202842] font-semibold truncate hidden sm:block max-w-[140px]">
+              {user.username}
             </span>
-            <form action="/api/auth/logout" method="POST">
-              <button className="text-[1.2rem] text-[#202842]/40 hover:text-red-500 transition-colors px-2 py-1">
-                Sohoka
+            <form action="/api/auth/logout" method="POST" className="shrink-0">
+              <button
+                className="flex items-center gap-1.5 text-[1.2rem] font-medium text-[#202842]/45 hover:text-red-500 transition-colors px-2.5 py-1.5 rounded-lg hover:bg-red-50"
+                title="Sohoka"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                <span className="hidden sm:inline">Sohoka</span>
               </button>
             </form>
           </div>
         </div>
-      </div>
+      </header>
 
       <div className="max-w-[640px] mx-auto w-full px-4 py-6 flex-1 flex flex-col gap-5">
 
