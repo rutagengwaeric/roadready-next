@@ -30,9 +30,9 @@ export default function LandingPage() {
     <div className="bg-[#f9f5ff] text-[#202842]">
 
       {/* ══ HEADER ══ */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-100 px-20"
-        style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06) " }}>
-        <div className="mx-auto px-6 h-[64px] flex items-center justify-between ">
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-100"
+        style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}>
+        <div className="max-w-[1160px] mx-auto px-4 sm:px-6 h-[64px] flex items-center justify-between">
           <div className="flex items-center gap-6">
             <Link href="/" className="shrink-0">
               <Image src="/assets/images/icons/full logo.svg" alt="RoadReady" width={120} height={42} className="object-contain" />
@@ -56,16 +56,16 @@ export default function LandingPage() {
       <section style={{ backgroundImage: "url('/assets/images/icons/hero bg phone 1.png')", backgroundSize: "cover", backgroundPosition: "right center", backgroundRepeat: "no-repeat" }}>
         <div className="max-w-[1160px] mx-auto px-6 py-14 md:py-20 flex flex-wrap-reverse md:flex-nowrap items-center gap-10">
 
-          <div className="w-full md:w-1/2 text-white">
-            <span className="inline-block bg-white/15 text-white text-[1.2rem] font-medium px-4 py-1.5 rounded-full mb-6 border border-white/20">
+          <div className="text-center md:text-left w-full md:w-1/2 text-white">
+            <span className="text-center md:text-left inline-block bg-white/15 text-white text-[1.2rem] font-medium px-4 py-1.5 rounded-full mb-6 border border-white/20">
               App ya Amategeko y&apos;Umuhanda
             </span>
-            <h1 className="font-black leading-[0.9] tracking-tight mb-4" style={{ fontSize: "clamp(4rem, 6vw, 6rem)" }}>
+            <h1 className="text-center md:text-left font-black leading-[0.9] tracking-tight mb-4" style={{ fontSize: "clamp(4rem, 6vw, 6rem)" }}>
               Tsindira<br />Provisoire
             </h1>
-            <p className="font-black leading-[0.95] mb-6" style={{ fontSize: "clamp(2.2rem, 3.5vw, 3rem)" }}>
+            <p className="text-center md:text-left font-black leading-[0.95] mb-6" style={{ fontSize: "clamp(2.2rem, 3.5vw, 3rem)" }}>
               Ukoze{" "}
-              <span className="relative inline-block">
+              <span className=" relative inline-block">
                 Rimwe Gusa
                 <span className="absolute bottom-[5px] left-0 w-full h-[7px] bg-[#0ad4c8] -z-[1] rounded-sm" />
               </span>

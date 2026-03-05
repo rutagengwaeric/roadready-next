@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
+import { signToken } from "@/lib/auth";
 import { normalizePhone } from "@/lib/utils";
 
 export async function POST(req: NextRequest) {
@@ -26,11 +27,22 @@ export async function POST(req: NextRequest) {
 
     const hashed = await bcrypt.hash(password, 12);
 
-    await prisma.user.create({
+    const user = await prisma.user.create({
       data: { username, email, phone, password: hashed },
     });
 
-    return NextResponse.json({ success: true });
+    const token = await signToken({ userId: user.id, phone: user.phone });
+
+    const res = NextResponse.json({ success: true });
+    res.cookies.set("rr_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 7,
+      path: "/",
+    });
+
+    return res;
   } catch (err) {
     console.error("Register error:", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
