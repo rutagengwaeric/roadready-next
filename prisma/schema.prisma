@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int             @id @default(autoincrement())
+  username    String
+  email       String          @unique
+  phone       String          @unique
+  password    String
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  payments    Payment[]
+  testResults TestResult[]
+  keywords    KeywordResult[]
+}
+
+model Payment {
+  id                    Int      @id @default(autoincrement())
+  userId                Int
+  amountPaid            Decimal  @db.Decimal(10, 2)
+  paymentDate           DateTime @default(now())
+  paymentExpirationDate DateTime
+  paymentRef            String   @unique
+  user                  User     @relation(fields: [userId], references: [id])
+}
+
+model TestResult {
+  id              Int    @id @default(autoincrement())
+  testNumber      Int
+  startTestNumber Int
+  stopTestNumber  Int
+  signStartTestN  Int
+  signStopTestN   Int
+  questions       String
+  marks           String
+  userId          Int
+  user            User   @relation(fields: [userId], references: [id])
+
+  @@unique([userId, testNumber])
+}
+
+model KeywordResult {
+  id              Int    @id @default(autoincrement())
+  testNumber      Int
+  startTestNumber Int
+  stopTestNumber  Int
+  signStartTestN  Int
+  signStopTestN   Int
+  questions       String
+  marks           String
+  userId          Int
+  user            User   @relation(fields: [userId], references: [id])
+
+  @@unique([userId, testNumber])
+}
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+}
