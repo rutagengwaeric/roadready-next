@@ -1,8 +1,8 @@
 "use client";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-// Question types
 interface Question {
   id: number;
   title: string;
@@ -24,22 +24,6 @@ interface TestClientProps {
   } | null;
 }
 
-// Dynamically load questions based on test config
-function getQuestionsForTest(
-  testType: "tests" | "keywords",
-  testNumber: number
-): { questions: Question[]; numQ: number; passScore: number; perfectScore: number } {
-  // Tests: 13 normal + 7 signs = 20 questions per test
-  // Keywords: 3 normal + 2 signs = 5 questions per test
-  const isTests = testType === "tests";
-  const numQ = isTests ? 20 : 5;
-  const passScore = isTests ? 12 : 3;
-  const perfectScore = isTests ? 20 : 5;
-
-  // Generate dummy questions array (real data loaded client-side from JS files)
-  return { questions: [], numQ, passScore, perfectScore };
-}
-
 type Phase = "loading" | "question" | "result";
 
 export default function TestClient({ testType, testNumber, existing }: TestClientProps) {
@@ -47,7 +31,6 @@ export default function TestClient({ testType, testNumber, existing }: TestClien
   const isTests = testType === "tests";
   const numQ = isTests ? 20 : 5;
   const passScore = isTests ? 12 : 3;
-  const perfectScore = numQ;
 
   const [questions, setQuestions] = useState<Question[]>([]);
   const [phase, setPhase] = useState<Phase>("loading");
@@ -59,7 +42,6 @@ export default function TestClient({ testType, testNumber, existing }: TestClien
   const [missedQuestions, setMissedQuestions] = useState<Question[]>([]);
   const [saving, setSaving] = useState(false);
 
-  // Load questions dynamically
   useEffect(() => {
     async function load() {
       let allQ: Question[] = [];
@@ -69,22 +51,17 @@ export default function TestClient({ testType, testNumber, existing }: TestClien
           import("@/lib/signsQuestion.js"),
         ]);
         const start = (testNumber - 1) * 13;
-        const stop = start + 12;
         const signStart = (testNumber - 1) * 7;
-        const signStop = signStart + 6;
-        allQ = [...Test.slice(start, stop + 1), ...Test1.slice(signStart, signStop + 1)];
+        allQ = [...Test.slice(start, start + 13), ...Test1.slice(signStart, signStart + 7)];
       } else {
         const [{ keywords }, { signsKeywords }] = await Promise.all([
           import("@/lib/questions.js"),
           import("@/lib/signsQuestion.js"),
         ]);
         const start = (testNumber - 1) * 3;
-        const stop = start + 2;
         const signStart = (testNumber - 1) * 2;
-        const signStop = signStart + 1;
-        allQ = [...keywords.slice(start, stop + 1), ...signsKeywords.slice(signStart, signStop + 1)];
+        allQ = [...keywords.slice(start, start + 3), ...signsKeywords.slice(signStart, signStart + 2)];
       }
-      // Shuffle
       const shuffled = [...allQ].sort(() => Math.random() - 0.5).slice(0, numQ);
       setQuestions(shuffled);
       setPhase("question");
@@ -132,10 +109,12 @@ export default function TestClient({ testType, testNumber, existing }: TestClien
   }
 
   function handleNext() {
+    const isLast = current + 1 >= questions.length;
+    const finalScore = correct + (submitted && selected === currentQ?.correctAnswer ? 0 : 0);
     setSelected(null);
     setSubmitted(false);
-    if (current + 1 >= questions.length) {
-      const score = correct + (selected === currentQ?.correctAnswer ? 1 : 0);
+    if (isLast) {
+      const score = correct;
       saveProgress(score);
       setPhase("result");
     } else {
@@ -144,80 +123,85 @@ export default function TestClient({ testType, testNumber, existing }: TestClien
   }
 
   function restartTest() {
-    const shuffled = [...questions].sort(() => Math.random() - 0.5);
-    setQuestions(shuffled);
-    setCurrent(0);
-    setSelected(null);
-    setSubmitted(false);
-    setCorrect(0);
-    setWrong(0);
-    setMissedQuestions([]);
-    setPhase("question");
+    setQuestions(q => [...q].sort(() => Math.random() - 0.5));
+    setCurrent(0); setSelected(null); setSubmitted(false);
+    setCorrect(0); setWrong(0); setMissedQuestions([]); setPhase("question");
   }
 
   function retryMissed() {
     setQuestions([...missedQuestions].sort(() => Math.random() - 0.5));
-    setCurrent(0);
-    setSelected(null);
-    setSubmitted(false);
-    setCorrect(0);
-    setWrong(0);
-    setMissedQuestions([]);
-    setPhase("question");
+    setCurrent(0); setSelected(null); setSubmitted(false);
+    setCorrect(0); setWrong(0); setMissedQuestions([]); setPhase("question");
   }
 
-  const progress = questions.length > 0 ? ((current) / questions.length) * 100 : 0;
+  const progress = questions.length > 0 ? (current / questions.length) * 100 : 0;
 
+  /* ── LOADING ── */
   if (phase === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <span className="w-10 h-10 border-4 border-[#5d63ff]/30 border-t-[#5d63ff] rounded-full animate-spin block mx-auto mb-4" />
-          <p className="text-gray-500 text-sm">Gutegura ibizami...</p>
+      <div style={{ minHeight: "100vh", backgroundColor: "#f9f5ff", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ textAlign: "center" }}>
+          <div className="dots-container" style={{ position: "relative", width: 80, height: 24, margin: "0 auto 16px" }}>
+            <div className="dot" /><div className="dot" /><div className="dot" />
+          </div>
+          <p style={{ color: "rgba(32,40,66,0.6)", fontSize: "1.4rem" }}>Gutegura ibizami...</p>
         </div>
       </div>
     );
   }
 
+  /* ── RESULT ── */
   if (phase === "result") {
-    const total = correct + wrong;
     const passed = correct >= passScore;
+    const perfect = correct === numQ;
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 max-w-sm w-full text-center">
-          <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center text-4xl mb-6 ${correct === perfectScore ? "bg-green-100" : passed ? "bg-blue-100" : "bg-red-100"}`}>
-            {correct === perfectScore ? "🎉" : passed ? "👍" : "😔"}
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-1">Ubonye {correct} / {total}</h2>
-          <p className="text-gray-500 text-sm mb-6">
-            {correct === perfectScore
-              ? `Bravo! Ubashije kuzuza ikizami cya ${testNumber}!`
-              : passed
-              ? `Warangije neza! Uracyabura amanota ${wrong} gusa.`
-              : `Oops! Usabwe kubona nibura ${passScore} kugirango ukomeze.`}
-          </p>
-          <div className="flex flex-col gap-3">
-            {wrong > 0 && (
-              <button onClick={retryMissed} className="btn-primary py-3 text-sm">
-                Subiramo ibyakunaniye ({wrong})
+      <div style={{ minHeight: "100vh", backgroundColor: "#f9f5ff", display: "flex", flexDirection: "column" }}>
+        {/* Top bar */}
+        <div style={{ backgroundColor: "#fff", borderBottom: "1px solid #eee", padding: "0 16px", height: 60, display: "flex", alignItems: "center" }}>
+          <Image src="/assets/images/icons/full logo.svg" alt="RoadReady" width={100} height={36} style={{ objectFit: "contain" }} />
+        </div>
+
+        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+          <div style={{ background: "#fff", borderRadius: 18, border: "1px solid #ece8e8", boxShadow: "0 4px 30px rgba(0,0,0,0.08)", padding: "32px 24px", maxWidth: 360, width: "100%", textAlign: "center" }}>
+            <div style={{ width: 80, height: 80, borderRadius: "50%", margin: "0 auto 20px", background: perfect ? "#e6f9f0" : passed ? "#eeefff" : "#fff5f5", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 38 }}>
+              {perfect ? "🎉" : passed ? "👍" : "😔"}
+            </div>
+            <h2 style={{ fontSize: "2.4rem", fontWeight: 700, color: "#202842", marginBottom: 6 }}>
+              Ubonye {correct} / {correct + wrong}
+            </h2>
+            <p style={{ color: "rgba(32,40,66,0.65)", fontSize: "1.4rem", marginBottom: 24, lineHeight: 1.5 }}>
+              {perfect
+                ? `Bravo! Ubashije kuzuzuza ikizami cya ${testNumber < 10 ? `0${testNumber}` : testNumber}, Komerezaho!`
+                : passed
+                ? `Warangije neza! Uracyabura amanota ${wrong} gusa.`
+                : `Oops! Usabwe kubona nibura ${passScore} kugirango ukomeze.`}
+            </p>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {wrong > 0 && (
+                <button onClick={retryMissed} className="btn btn-primary" style={{ height: 45, fontSize: "1.4rem", width: "100%" }}>
+                  Subiramo ibyakunaniye ({wrong})
+                </button>
+              )}
+              <button onClick={restartTest} className="btn btn-outline" style={{ height: 45, fontSize: "1.4rem", width: "100%" }}>
+                Subiramo ikizami cyose
               </button>
-            )}
-            <button onClick={restartTest} className="py-3 rounded-xl border border-[#5d63ff] text-[#5d63ff] text-sm font-semibold hover:bg-[#5d63ff] hover:text-white transition-all">
-              Subiramo ikizami cyose
-            </button>
-            {passed && (
-              <button
-                onClick={() => router.push(`/levels?test=${testType}`)}
-                className="py-3 rounded-xl bg-gray-100 text-gray-700 text-sm font-semibold hover:bg-gray-200 transition-all"
-              >
-                Komeza → Ikizami {testNumber + 1}
+              {passed && (
+                <button onClick={() => router.push(`/levels?test=${testType}`)} className="btn" style={{ height: 45, fontSize: "1.4rem", width: "100%", background: "#f5f4fa", color: "#202842" }}>
+                  Komeza → Ikizami {testNumber + 1}
+                </button>
+              )}
+              <button onClick={() => router.push(`/levels?test=${testType}`)} style={{ fontSize: "1.3rem", color: "rgba(32,40,66,0.5)", background: "none", border: "none", cursor: "pointer", marginTop: 4 }}>
+                Subira ku rutonde
               </button>
-            )}
-            <button onClick={() => router.push(`/levels?test=${testType}`)} className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
-              Subira ku rutonde
-            </button>
+            </div>
           </div>
         </div>
+
+        <footer className="app-footer">
+          <p>&copy; Copyright 2025 RoadReady - A Binary Solutions Company.</p>
+          <p>Designed By ClaroCreatives</p>
+        </footer>
       </div>
     );
   }
@@ -226,54 +210,70 @@ export default function TestClient({ testType, testNumber, existing }: TestClien
 
   const optionLabels = ["A", "B", "C", "D"];
 
+  /* ── QUESTION ── */
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-100 sticky top-0 z-10">
-        <div className="max-w-2xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between mb-3">
-            <button onClick={() => router.back()} className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-gray-100 transition-colors">
-              <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
+    <div style={{ minHeight: "100vh", backgroundColor: "#f9f5ff", display: "flex", flexDirection: "column" }}>
+      {/* Top bar */}
+      <div style={{ backgroundColor: "#fff", borderBottom: "1px solid #eee", position: "sticky", top: 0, zIndex: 100 }}>
+        <div style={{ maxWidth: 640, margin: "0 auto", padding: "12px 16px" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+            <button onClick={() => router.back()} style={{ width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, border: "1px solid #eee", background: "#fff" }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5d6eff" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
             </button>
-            <div className="text-center">
-              <p className="text-xs text-gray-500 font-medium">IKIZAMI {testNumber < 10 ? `0${testNumber}` : testNumber}</p>
-              <p className="text-sm font-bold text-gray-900">Ikibazo {current + 1} / {questions.length}</p>
+            <div style={{ textAlign: "center" }}>
+              <p style={{ fontSize: "1.1rem", fontWeight: 600, color: "rgba(32,40,66,0.5)", letterSpacing: 1 }}>
+                IKIZAMI {testNumber < 10 ? `0${testNumber}` : testNumber}
+              </p>
+              <p style={{ fontSize: "1.5rem", fontWeight: 700, color: "#202842" }}>
+                Ikibazo {current + 1} / {questions.length}
+              </p>
             </div>
-            <div className="flex items-center gap-1">
-              <span className="text-xs text-green-600 font-semibold">{correct}✓</span>
-              <span className="text-gray-300 mx-1">|</span>
-              <span className="text-xs text-red-500 font-semibold">{wrong}✗</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: "1.3rem", fontWeight: 700, color: "#27ae60" }}>{correct}✓</span>
+              <span style={{ color: "#ddd" }}>|</span>
+              <span style={{ fontSize: "1.3rem", fontWeight: 700, color: "#e53e3e" }}>{wrong}✗</span>
             </div>
           </div>
           {/* Progress bar */}
-          <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-            <div className="h-full bg-[#5d63ff] rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
+          <div style={{ height: 6, backgroundColor: "#e8e4ff", borderRadius: 4, overflow: "hidden" }}>
+            <div style={{ height: "100%", backgroundColor: "#5d6eff", width: `${progress}%`, transition: "width 0.5s ease", borderRadius: 4 }} />
           </div>
         </div>
       </div>
 
-      {/* Question */}
-      <div className="flex-1 max-w-2xl mx-auto w-full px-4 py-6 flex flex-col gap-6">
-        <div className="bg-white rounded-2xl border border-gray-100 p-6">
+      {/* Question body */}
+      <div style={{ flex: 1, maxWidth: 640, margin: "0 auto", width: "100%", padding: "20px 16px 32px", display: "flex", flexDirection: "column", gap: 16 }}>
+        {/* Question card */}
+        <div style={{ background: "#fff", borderRadius: 16, border: "1px solid #ece8e8", padding: 20 }}>
           {currentQ.img && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={currentQ.img} alt="Ishusho" className="w-full max-h-48 object-contain rounded-xl mb-4" />
+            <img src={currentQ.img} alt="Ishusho" style={{ width: "100%", maxHeight: 200, objectFit: "contain", borderRadius: 12, marginBottom: 16 }} />
           )}
-          <p className="text-gray-900 font-medium leading-relaxed">{currentQ.title}</p>
+          <p style={{ fontSize: "1.6rem", color: "#202842", fontWeight: 500, lineHeight: 1.5 }}>{currentQ.title}</p>
         </div>
 
         {/* Options */}
-        <div className="space-y-3">
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {currentQ.options.map((opt, idx) => {
-            let style = "border-gray-200 bg-white text-gray-700";
+            let bg = "#fff";
+            let border = "1px solid #ece8e8";
+            let color = "#202842";
+            let labelBg = "#f5f4fa";
+            let labelColor = "#aaa";
+
             if (submitted) {
-              if (idx === currentQ.correctAnswer) style = "border-green-400 bg-green-50 text-green-800";
-              else if (idx === selected) style = "border-red-400 bg-red-50 text-red-700";
-              else style = "border-gray-100 bg-gray-50 text-gray-400";
+              if (idx === currentQ.correctAnswer) {
+                bg = "#f0fff4"; border = "2px solid #48bb78"; color = "#22543d";
+                labelBg = "#48bb78"; labelColor = "#fff";
+              } else if (idx === selected) {
+                bg = "#fff5f5"; border = "2px solid #fc8181"; color = "#742a2a";
+                labelBg = "#fc8181"; labelColor = "#fff";
+              } else {
+                bg = "#fafafa"; border = "1px solid #eee"; color = "#aaa";
+              }
             } else if (selected === idx) {
-              style = "border-[#5d63ff] bg-[#5d63ff]/5 text-[#5d63ff]";
+              bg = "#f0effe"; border = "2px solid #5d6eff"; color = "#5d6eff";
+              labelBg = "#5d6eff"; labelColor = "#fff";
             }
 
             return (
@@ -281,34 +281,44 @@ export default function TestClient({ testType, testNumber, existing }: TestClien
                 key={idx}
                 onClick={() => handleSelect(idx)}
                 disabled={submitted}
-                className={`w-full flex items-start gap-4 p-4 rounded-2xl border-2 text-left transition-all ${style}`}
+                style={{
+                  width: "100%", display: "flex", alignItems: "flex-start", gap: 14,
+                  padding: "14px 16px", borderRadius: 14, border, background: bg,
+                  cursor: submitted ? "default" : "pointer", textAlign: "left", transition: "0.15s",
+                }}
               >
-                <span className={`w-8 h-8 rounded-xl flex-shrink-0 flex items-center justify-center text-sm font-bold ${submitted && idx === currentQ.correctAnswer ? "bg-green-500 text-white" : submitted && idx === selected ? "bg-red-400 text-white" : selected === idx ? "bg-[#5d63ff] text-white" : "bg-gray-100 text-gray-500"}`}>
+                <span style={{ width: 34, height: 34, borderRadius: 10, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.3rem", fontWeight: 700, background: labelBg, color: labelColor }}>
                   {optionLabels[idx]}
                 </span>
-                <span className="text-sm leading-relaxed pt-0.5">{opt}</span>
+                <span style={{ fontSize: "1.4rem", color, lineHeight: 1.5, paddingTop: 4 }}>{opt}</span>
               </button>
             );
           })}
         </div>
 
         {/* Action button */}
-        <div className="pb-6">
+        <div>
           {!submitted ? (
             <button
               onClick={handleSubmit}
               disabled={selected === null}
-              className={`btn-primary w-full py-4 text-base ${selected === null ? "opacity-50 cursor-not-allowed" : ""}`}
+              className="btn btn-primary"
+              style={{ height: 50, width: "100%", fontSize: "1.5rem", opacity: selected === null ? 0.5 : 1, cursor: selected === null ? "not-allowed" : "pointer" }}
             >
               Emeza
             </button>
           ) : (
-            <button onClick={handleNext} className="btn-primary w-full py-4 text-base">
+            <button onClick={handleNext} className="btn btn-primary" style={{ height: 50, width: "100%", fontSize: "1.5rem" }}>
               {current + 1 >= questions.length ? (saving ? "Kubika..." : "Reba Ibisubizo") : "Ikibazo Gikurikira →"}
             </button>
           )}
         </div>
       </div>
+
+      <footer className="app-footer">
+        <p>&copy; Copyright 2025 RoadReady - A Binary Solutions Company.</p>
+        <p>Designed By ClaroCreatives</p>
+      </footer>
     </div>
   );
 }

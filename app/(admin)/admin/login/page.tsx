@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 export default function AdminLoginPage() {
@@ -32,28 +33,69 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <span className="text-2xl font-bold text-white">Road<span className="text-[#5d63ff]">Ready</span> <span className="text-gray-400 font-normal">Admin</span></span>
+    <div style={{ minHeight: "100vh", backgroundColor: "#1a1d2e", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, fontFamily: "inherit" }}>
+      <div style={{ width: "100%", maxWidth: 380 }}>
+        {/* Logo */}
+        <div style={{ textAlign: "center", marginBottom: 32 }}>
+          <Image
+            src="/assets/images/icons/full logo.svg"
+            alt="RoadReady"
+            width={150}
+            height={54}
+            style={{ objectFit: "contain", margin: "0 auto 12px", display: "block", filter: "brightness(0) invert(1)" }}
+          />
+          <p style={{ fontSize: "1.4rem", color: "rgba(255,255,255,0.4)" }}>Admin Panel</p>
         </div>
-        <div className="bg-gray-800 rounded-2xl border border-gray-700 p-8">
-          {error && <div className="mb-4 bg-red-900/30 border border-red-700 text-red-400 text-sm rounded-xl px-4 py-3">{error}</div>}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1.5">Email</label>
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="w-full bg-gray-700 border border-gray-600 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#5d63ff] transition-colors" required />
+
+        <div style={{ backgroundColor: "#12152a", border: "1px solid #2a2d4a", borderRadius: 16, padding: "28px 24px" }}>
+          {error && (
+            <div style={{ marginBottom: 18, background: "rgba(252,129,129,0.15)", border: "1px solid rgba(252,129,129,0.3)", borderRadius: 8, padding: "10px 14px", fontSize: "1.3rem", color: "#fc8181" }}>
+              {error}
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1.5">Password</label>
-              <input type="password" value={password} onChange={e => setPassword(e.target.value)} className="w-full bg-gray-700 border border-gray-600 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#5d63ff] transition-colors" required />
+          )}
+
+          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <label style={{ fontSize: "1.3rem", fontWeight: 500, color: "rgba(255,255,255,0.7)" }}>Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                style={{ width: "100%", backgroundColor: "#1a1d2e", border: "1px solid #2a2d4a", borderRadius: 8, padding: "12px 16px", color: "#fff", fontSize: "1.4rem", outline: "none", fontFamily: "inherit", transition: "0.2s" }}
+                onFocus={e => (e.target.style.borderColor = "#5d6eff")}
+                onBlur={e => (e.target.style.borderColor = "#2a2d4a")}
+                required
+              />
             </div>
-            <button type="submit" disabled={loading} className="w-full bg-[#5d63ff] text-white rounded-xl py-3 font-semibold text-sm hover:bg-[#4a4fd6] transition-colors flex items-center justify-center gap-2">
-              {loading ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : "Injira"}
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <label style={{ fontSize: "1.3rem", fontWeight: 500, color: "rgba(255,255,255,0.7)" }}>Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                style={{ width: "100%", backgroundColor: "#1a1d2e", border: "1px solid #2a2d4a", borderRadius: 8, padding: "12px 16px", color: "#fff", fontSize: "1.4rem", outline: "none", fontFamily: "inherit", transition: "0.2s" }}
+                onFocus={e => (e.target.style.borderColor = "#5d6eff")}
+                onBlur={e => (e.target.style.borderColor = "#2a2d4a")}
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn btn-primary"
+              style={{ height: 48, fontSize: "1.5rem", marginTop: 8 }}
+            >
+              {loading ? (
+                <span style={{ width: 20, height: 20, border: "3px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", display: "block", animation: "spin 0.7s linear infinite" }} />
+              ) : "Injira"}
             </button>
           </form>
         </div>
       </div>
+
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }

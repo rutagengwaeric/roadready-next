@@ -2,6 +2,28 @@ import { redirect } from "next/navigation";
 import { getAdminSession } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
+import Image from "next/image";
+
+const navItems = [
+  { href: "/admin", label: "Dashboard", icon: "📊" },
+  { href: "/admin/users", label: "Abakoresha", icon: "👥" },
+  { href: "/admin/payments", label: "Payments", icon: "💳" },
+];
+
+const planLabel = (amount: number) => {
+  if (amount === 900) return "Bronze — Umunsi";
+  if (amount === 2000) return "Silver — Icyumweru";
+  if (amount === 3000) return "Gold — Ibyumweru 2";
+  if (amount === 5000) return "Diamond — Ukwezi";
+  return `${amount} RWF`;
+};
+
+const planImg: Record<number, string> = {
+  900: "/assets/images/bronze 1.png",
+  2000: "/assets/images/icons/silver 1.png",
+  3000: "/assets/images/gold 1.png",
+  5000: "/assets/images/icons/diamond.png",
+};
 
 export default async function AdminPaymentsPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const session = await getAdminSession();
@@ -12,7 +34,7 @@ export default async function AdminPaymentsPage({ searchParams }: { searchParams
   const limit = 20;
   const now = new Date();
 
-  const [payments, total] = await Promise.all([
+  const [payments, total, revenue] = await Promise.all([
     prisma.payment.findMany({
       skip: (page - 1) * limit,
       take: limit,
@@ -20,75 +42,81 @@ export default async function AdminPaymentsPage({ searchParams }: { searchParams
       include: { user: { select: { username: true, phone: true } } },
     }),
     prisma.payment.count(),
+    prisma.payment.aggregate({ _sum: { amountPaid: true } }),
   ]);
 
-  const totalRevenue = await prisma.payment.aggregate({ _sum: { amountPaid: true } });
   const pages = Math.ceil(total / limit);
-
-  const planLabel = (amount: number) => {
-    if (amount === 900) return "Bronze (1 Day)";
-    if (amount === 2000) return "Silver (1 Week)";
-    if (amount === 3000) return "Gold (2 Weeks)";
-    if (amount === 5000) return "Diamond (1 Month)";
-    return `${amount} RWF`;
-  };
+  const totalRevenue = Number(revenue._sum.amountPaid ?? 0);
 
   return (
-    <div className="min-h-screen bg-gray-900 flex">
-      <aside className="w-64 bg-gray-800 border-r border-gray-700 flex flex-col p-6 fixed h-full">
-        <div className="mb-8">
-          <span className="text-xl font-bold text-white">Road<span className="text-[#5d63ff]">Ready</span></span>
-          <p className="text-xs text-gray-400 mt-1">Admin Panel</p>
+    <div style={{ minHeight: "100vh", backgroundColor: "#1a1d2e", display: "flex", fontFamily: "inherit" }}>
+      {/* Sidebar */}
+      <aside style={{ width: 240, backgroundColor: "#12152a", borderRight: "1px solid #2a2d4a", display: "flex", flexDirection: "column", padding: 24, position: "fixed", height: "100vh", top: 0 }}>
+        <div style={{ marginBottom: 32 }}>
+          <Image src="/assets/images/icons/full logo.svg" alt="RoadReady" width={120} height={42} style={{ objectFit: "contain", filter: "brightness(0) invert(1)" }} />
+          <p style={{ fontSize: "1.1rem", color: "rgba(255,255,255,0.4)", marginTop: 6 }}>Admin Panel</p>
         </div>
-        <nav className="space-y-1 flex-1">
-          {[{ href: "/admin", label: "Dashboard", icon: "📊" }, { href: "/admin/users", label: "Abakoresha", icon: "👥" }, { href: "/admin/payments", label: "Payments", icon: "💳" }].map(item => (
-            <Link key={item.href} href={item.href} className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-gray-700 hover:text-white transition-colors text-sm font-medium">
+        <nav style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
+          {navItems.map(item => (
+            <Link key={item.href} href={item.href} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderRadius: 10, color: "rgba(255,255,255,0.7)", fontSize: "1.4rem", transition: "0.2s", textDecoration: "none" }}>
               <span>{item.icon}</span>{item.label}
             </Link>
           ))}
         </nav>
+        <form action="/api/admin/logout" method="POST">
+          <button style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 14px", borderRadius: 10, color: "rgba(255,255,255,0.4)", fontSize: "1.4rem", width: "100%", cursor: "pointer" }}>
+            🚪 Sohoka
+          </button>
+        </form>
       </aside>
 
-      <main className="flex-1 ml-64 p-8">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-white">Payments Zose</h1>
-            <p className="text-gray-400 text-sm mt-1">Revenue yose: <span className="text-green-400 font-semibold">{Number(totalRevenue._sum.amountPaid ?? 0).toLocaleString()} RWF</span></p>
-          </div>
+      <main style={{ flex: 1, marginLeft: 240, padding: 32, overflowY: "auto" }}>
+        <div style={{ marginBottom: 24 }}>
+          <h1 style={{ fontSize: "2.4rem", fontWeight: 700, color: "#fff" }}>Payments Zose</h1>
+          <p style={{ fontSize: "1.3rem", color: "rgba(255,255,255,0.45)", marginTop: 4 }}>
+            Revenue yose:{" "}
+            <span style={{ color: "#68d391", fontWeight: 700 }}>{totalRevenue.toLocaleString()} RWF</span>
+          </p>
         </div>
 
-        <div className="bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
+        <div style={{ backgroundColor: "#12152a", border: "1px solid #2a2d4a", borderRadius: 16, overflow: "hidden" }}>
+          <div style={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
               <thead>
-                <tr className="border-b border-gray-700">
-                  <th className="px-5 py-4 text-left text-xs font-semibold text-gray-400 uppercase">Umukoresha</th>
-                  <th className="px-5 py-4 text-left text-xs font-semibold text-gray-400 uppercase">Plan</th>
-                  <th className="px-5 py-4 text-left text-xs font-semibold text-gray-400 uppercase">Ref</th>
-                  <th className="px-5 py-4 text-left text-xs font-semibold text-gray-400 uppercase">Igihe</th>
-                  <th className="px-5 py-4 text-left text-xs font-semibold text-gray-400 uppercase">Status</th>
+                <tr style={{ borderBottom: "1px solid #2a2d4a" }}>
+                  {["Umukoresha", "Plan", "Ref", "Igihe", "Status"].map(h => (
+                    <th key={h} style={{ padding: "14px 20px", textAlign: "left", fontSize: "1.1rem", fontWeight: 600, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: 1 }}>{h}</th>
+                  ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-700">
-                {payments.map(p => {
+              <tbody>
+                {payments.map((p, i) => {
                   const active = new Date(p.paymentExpirationDate) >= now;
+                  const amt = Number(p.amountPaid);
                   return (
-                    <tr key={p.id} className="hover:bg-gray-750 transition-colors">
-                      <td className="px-5 py-4">
-                        <p className="text-white font-medium text-sm">{p.user.username}</p>
-                        <p className="text-gray-400 text-xs mt-0.5">{p.user.phone}</p>
+                    <tr key={p.id} style={{ borderBottom: i < payments.length - 1 ? "1px solid #2a2d4a" : "none" }}>
+                      <td style={{ padding: "14px 20px" }}>
+                        <p style={{ fontSize: "1.4rem", fontWeight: 600, color: "#fff" }}>{p.user.username}</p>
+                        <p style={{ fontSize: "1.2rem", color: "rgba(255,255,255,0.4)", marginTop: 2 }}>{p.user.phone}</p>
                       </td>
-                      <td className="px-5 py-4">
-                        <span className="text-white text-sm font-medium">{planLabel(Number(p.amountPaid))}</span>
+                      <td style={{ padding: "14px 20px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                          {planImg[amt] && (
+                            <Image src={planImg[amt]} alt="" width={22} height={22} style={{ objectFit: "contain" }} />
+                          )}
+                          <span style={{ fontSize: "1.3rem", color: "rgba(255,255,255,0.8)", fontWeight: 600 }}>{planLabel(amt)}</span>
+                        </div>
                       </td>
-                      <td className="px-5 py-4 text-gray-400 text-xs font-mono">{p.paymentRef.slice(0, 16)}...</td>
-                      <td className="px-5 py-4 text-gray-400 text-xs">
+                      <td style={{ padding: "14px 20px", fontSize: "1.1rem", color: "rgba(255,255,255,0.35)", fontFamily: "monospace" }}>
+                        {p.paymentRef.slice(0, 16)}...
+                      </td>
+                      <td style={{ padding: "14px 20px", fontSize: "1.2rem", color: "rgba(255,255,255,0.45)" }}>
                         <p>{new Date(p.paymentDate).toLocaleDateString()}</p>
-                        <p className="mt-0.5">→ {new Date(p.paymentExpirationDate).toLocaleDateString()}</p>
+                        <p style={{ marginTop: 2 }}>→ {new Date(p.paymentExpirationDate).toLocaleDateString()}</p>
                       </td>
-                      <td className="px-5 py-4">
-                        <span className={`inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full ${active ? "bg-green-900/40 text-green-400" : "bg-gray-700 text-gray-400"}`}>
-                          {active ? "● Ifite" : "Irangiranye"}
+                      <td style={{ padding: "14px 20px" }}>
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: 6, background: active ? "rgba(72,187,120,0.15)" : "rgba(255,255,255,0.05)", color: active ? "#68d391" : "rgba(255,255,255,0.3)", padding: "3px 10px", borderRadius: 20, fontSize: "1.2rem", fontWeight: 600 }}>
+                          ● {active ? "Ifite" : "Irangiranye"}
                         </span>
                       </td>
                     </tr>
@@ -97,13 +125,19 @@ export default async function AdminPaymentsPage({ searchParams }: { searchParams
               </tbody>
             </table>
           </div>
-          {payments.length === 0 && <div className="py-12 text-center text-gray-500">Nta payment iboneka.</div>}
+          {payments.length === 0 && (
+            <p style={{ padding: "40px 20px", textAlign: "center", color: "rgba(255,255,255,0.3)", fontSize: "1.4rem" }}>Nta payment iboneka.</p>
+          )}
         </div>
 
         {pages > 1 && (
-          <div className="flex items-center justify-center gap-2 mt-6">
+          <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 20 }}>
             {Array.from({ length: pages }, (_, i) => i + 1).map(p => (
-              <Link key={p} href={`/admin/payments?page=${p}`} className={`w-9 h-9 flex items-center justify-center rounded-xl text-sm font-medium transition-colors ${p === page ? "bg-[#5d63ff] text-white" : "bg-gray-800 text-gray-400 hover:bg-gray-700 border border-gray-700"}`}>{p}</Link>
+              <Link key={p} href={`/admin/payments?page=${p}`}
+                style={{ width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, fontSize: "1.3rem", fontWeight: 600, textDecoration: "none", background: p === page ? "#5d6eff" : "#12152a", color: p === page ? "#fff" : "rgba(255,255,255,0.5)", border: p === page ? "none" : "1px solid #2a2d4a" }}
+              >
+                {p}
+              </Link>
             ))}
           </div>
         )}

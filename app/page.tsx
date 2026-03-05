@@ -8,19 +8,16 @@ export default function LandingPage() {
       {/* HEADER */}
       <header style={{ backgroundColor: "#fff", position: "sticky", top: 0, zIndex: 1100, borderBottom: "1px solid #eee" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px", height: 70, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          {/* Logo */}
           <Link href="/">
             <Image src="/assets/images/icons/full logo.svg" alt="RoadReady" width={130} height={45} style={{ objectFit: "contain" }} />
           </Link>
 
-          {/* Nav links (desktop) */}
           <nav style={{ display: "flex", alignItems: "center", gap: 30 }} className="hidden md:flex">
-            <a href="#about" style={{ fontSize: "1.3rem", color: "#202842", transition: "0.2s" }} onMouseOver={e => (e.currentTarget.style.color = "#5d6eff")} onMouseOut={e => (e.currentTarget.style.color = "#202842")}>Ibisobanuro</a>
-            <a href="#price" style={{ fontSize: "1.3rem", color: "#202842", transition: "0.2s" }} onMouseOver={e => (e.currentTarget.style.color = "#5d6eff")} onMouseOut={e => (e.currentTarget.style.color = "#202842")}>Ibiciro</a>
-            <a href="#contact" style={{ fontSize: "1.3rem", color: "#202842", transition: "0.2s" }} onMouseOver={e => (e.currentTarget.style.color = "#5d6eff")} onMouseOut={e => (e.currentTarget.style.color = "#202842")}>Twandikire</a>
+            <a href="#about" className="nav-link" style={{ fontSize: "1.3rem", color: "#202842" }}>Ibisobanuro</a>
+            <a href="#price" className="nav-link" style={{ fontSize: "1.3rem", color: "#202842" }}>Ibiciro</a>
+            <a href="#contact" className="nav-link" style={{ fontSize: "1.3rem", color: "#202842" }}>Twandikire</a>
           </nav>
 
-          {/* Action buttons */}
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <Link href="/login" className="btn btn-outline" style={{ height: 38, fontSize: "1.3rem", padding: "0 18px" }}>
               Injira
@@ -41,7 +38,6 @@ export default function LandingPage() {
           backgroundRepeat: "no-repeat",
           minHeight: 500,
         }}
-        className="hero-section"
       >
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "30px 16px 50px", display: "flex", flexWrap: "wrap", alignItems: "center", gap: 30 }}>
           {/* Hero image */}
@@ -56,7 +52,7 @@ export default function LandingPage() {
             </h1>
             <p style={{ fontSize: "clamp(2rem, 4vw, 3rem)", fontWeight: 900, marginBlock: "12px 18px", textAlign: "center" }}>
               Ukoze{" "}
-              <span style={{ position: "relative", zIndex: 1 }}>
+              <span style={{ position: "relative", zIndex: 1, display: "inline-block" }}>
                 Rimwe Gusa
                 <span style={{ position: "absolute", width: "100%", height: 7, backgroundColor: "#0ad4c8", bottom: 6, left: 0, zIndex: -1, borderRadius: 2 }} />
               </span>
@@ -86,7 +82,7 @@ export default function LandingPage() {
                 <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "1.2rem", marginTop: 4 }}>Ubuhamya <span style={{ color: "#FFB800" }}>49</span></p>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <div style={{ display: "flex", position: "relative", width: 80, height: 32 }}>
+                <div style={{ display: "flex", position: "relative", width: 72, height: 32 }}>
                   {["/assets/images/icons/profile1.png", "/assets/images/icons/profile2.png", "/assets/images/icons/profile3.png"].map((src, i) => (
                     <Image key={i} src={src} alt="" width={32} height={32} style={{ width: 32, height: 32, borderRadius: "50%", border: "2px solid #fff", position: "absolute", left: i * 18, objectFit: "cover" }} />
                   ))}
@@ -101,22 +97,18 @@ export default function LandingPage() {
       {/* ABOUT */}
       <section id="about" style={{ paddingTop: 70, paddingBottom: 20 }}>
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 16px", display: "flex", flexWrap: "wrap", alignItems: "center", gap: 40 }}>
-          {/* Image */}
-          <div style={{ flex: "0 0 auto", display: "none" }} className="md:block" >
-            <Image src="/assets/images/about-banner 1.png" alt="About" width={420} height={380} style={{ width: "100%", maxWidth: 420, height: "auto", objectFit: "cover" }} />
+          <div className="hidden md:block" style={{ flex: "0 1 40%" }}>
+            <Image src="/assets/images/about-banner 1.png" alt="About" width={420} height={380} style={{ width: "100%", height: "auto", objectFit: "cover" }} />
           </div>
 
-          {/* Text */}
           <div style={{ flex: "1 1 280px" }}>
             <h2 style={{ fontSize: "clamp(2.2rem, 4vw, 2.8rem)", fontWeight: 700, textAlign: "center", lineHeight: 1.2 }}>Uko RoadReady Ikora</h2>
             <p style={{ color: "rgba(32,40,66,0.65)", fontSize: "1.4rem", marginBlock: "14px 20px", textAlign: "center", lineHeight: 1.5 }}>
               Ni Application Ikorera Muri telefoni, mudasobwa ndetse no kuri murandasi. Iguha imyitozo irenga 450+ ukora, ikagukosora ndetse ikanagusobanurira.
             </p>
 
-            {/* Mockup center (mobile) */}
             <Image src="/assets/images/mockup.png" alt="Mockup" width={280} height={220} style={{ display: "block", margin: "0 auto 20px", maxWidth: 280, height: "auto" }} className="md:hidden" />
 
-            {/* Features list */}
             <div style={{ background: "#fff", borderRadius: 20, border: "1px solid #ece8e8", boxShadow: "0 53px 50px #5d6dff18", padding: 20, marginBottom: 24 }}>
               <ul style={{ display: "grid", gap: 14 }}>
                 {[
@@ -168,6 +160,7 @@ export default function LandingPage() {
             ].map(plan => (
               <div
                 key={plan.name}
+                className="price-card"
                 style={{
                   flex: "0 0 240px",
                   scrollSnapAlign: "start",
@@ -178,11 +171,7 @@ export default function LandingPage() {
                   display: "flex",
                   flexDirection: "column",
                   height: 400,
-                  transition: "transform 0.3s",
-                  cursor: "pointer",
                 }}
-                onMouseOver={e => (e.currentTarget.style.transform = "translateY(-4%)")}
-                onMouseOut={e => (e.currentTarget.style.transform = "translateY(0)")}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "0 auto 8px" }}>
                   <Image src={plan.img} alt={plan.name} width={40} height={40} style={{ width: 40, height: 40, objectFit: "contain" }} />
@@ -223,7 +212,6 @@ export default function LandingPage() {
       >
         <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 16px" }}>
           <div style={{ background: "#fff", border: "1px solid #f9f5ff", borderRadius: 15, padding: "30px 24px", boxShadow: "0 4px 4px rgba(0,0,0,0.12)", display: "flex", flexWrap: "wrap", gap: 30 }}>
-            {/* Form */}
             <div style={{ flex: "1 1 280px" }}>
               <h3 style={{ fontSize: "2.2rem", fontWeight: 700, color: "#5d6eff" }}>Twandikire</h3>
               <p style={{ color: "rgba(32,40,66,0.65)", fontSize: "1.4rem", marginBlock: "6px 16px" }}>Turi hano Kubwawe! N&apos;iki twagufasha?</p>
@@ -236,7 +224,6 @@ export default function LandingPage() {
               </form>
             </div>
 
-            {/* Address */}
             <div style={{ flex: "1 1 200px" }}>
               <Image src="/assets/images/contact illustrate.png" alt="Contact" width={280} height={200} style={{ width: "100%", height: "auto", objectFit: "cover", marginBottom: 16 }} className="hidden md:block" />
               <ul style={{ display: "grid", gap: 16, marginTop: 20 }}>
@@ -254,7 +241,6 @@ export default function LandingPage() {
                 ))}
               </ul>
 
-              {/* Social */}
               <ul style={{ display: "flex", gap: 10, marginTop: 24, justifyContent: "center" }}>
                 {[
                   { icon: "/assets/images/icons/facebook.svg", href: "#" },
@@ -263,7 +249,7 @@ export default function LandingPage() {
                   { icon: "/assets/images/icons/linked.svg", href: "#" },
                 ].map((s, i) => (
                   <li key={i}>
-                    <a href={s.href} target="_blank" rel="noopener noreferrer" style={{ width: 38, height: 38, borderRadius: "50%", backgroundColor: "#5d6eff", display: "grid", placeItems: "center" }}>
+                    <a href={s.href} target="_blank" rel="noopener noreferrer" className="social-icon">
                       <Image src={s.icon} alt="" width={20} height={20} style={{ width: 20, height: 20, objectFit: "contain" }} />
                     </a>
                   </li>

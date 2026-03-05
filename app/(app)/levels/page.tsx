@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { getUser, hasActivePayment } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
@@ -22,63 +23,88 @@ export default async function LevelsPage({ searchParams }: { searchParams: Promi
   const total = testType === "keywords" ? TOTAL_KEYWORDS : TOTAL_TESTS;
   const completedNums = new Set(results.map(r => r.testNumber));
   const maxUnlocked = completedNums.size > 0 ? Math.max(...completedNums) + 1 : 1;
+  const progressPct = Math.round((completedNums.size / total) * 100);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-white border-b border-gray-100 sticky top-0 z-10">
-        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-4">
-          <Link href="/app" className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-gray-100 transition-colors">
-            <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
+    <div style={{ minHeight: "100vh", backgroundColor: "#f9f5ff", display: "flex", flexDirection: "column" }}>
+      {/* Top bar */}
+      <div style={{ backgroundColor: "#fff", borderBottom: "1px solid #eee", position: "sticky", top: 0, zIndex: 100 }}>
+        <div style={{ maxWidth: 640, margin: "0 auto", padding: "0 16px", height: 60, display: "flex", alignItems: "center", gap: 12 }}>
+          <Link href="/app" style={{ width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, border: "1px solid #eee", flexShrink: 0 }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5d6eff" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
           </Link>
-          <div className="flex-1">
-            <h1 className="font-bold text-gray-900">{testType === "keywords" ? "Amagambo Ngenderwaho" : "Ibizami"}</h1>
-            <p className="text-xs text-gray-500">{completedNums.size}/{total} birangiye</p>
+          <Image src="/assets/images/icons/full logo.svg" alt="RoadReady" width={100} height={36} style={{ objectFit: "contain" }} />
+          <div style={{ flex: 1, textAlign: "right" }}>
+            <p style={{ fontSize: "1.3rem", fontWeight: 700, color: "#202842" }}>{testType === "keywords" ? "Amagambo" : "Ibizami"}</p>
+            <p style={{ fontSize: "1.2rem", color: "rgba(32,40,66,0.55)" }}>{completedNums.size}/{total} birangiye</p>
           </div>
-          <div className="text-right">
-            <div className="w-24 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-              <div className="h-full bg-[#5d63ff] rounded-full" style={{ width: `${(completedNums.size / total) * 100}%` }} />
-            </div>
-          </div>
+        </div>
+        {/* Progress bar under topbar */}
+        <div style={{ height: 4, backgroundColor: "#e8e4ff", width: "100%" }}>
+          <div style={{ height: "100%", backgroundColor: "#5d6eff", width: `${progressPct}%`, transition: "width 0.5s ease" }} />
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-8">
-        <div className="grid sm:grid-cols-2 gap-4">
+      <div style={{ maxWidth: 640, margin: "0 auto", padding: "24px 16px", flex: 1, width: "100%" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 14 }}>
           {Array.from({ length: total }, (_, i) => i + 1).map(num => {
             const result = results.find(r => r.testNumber === num);
             const isUnlocked = num <= maxUnlocked;
             const marks = result?.marks ? result.marks.split(",").map(Number) : [];
             const bestMark = marks.length > 0 ? Math.max(...marks) : null;
             const maxMark = testType === "keywords" ? 5 : 20;
+            const passed = bestMark !== null && bestMark >= (testType === "keywords" ? 3 : 12);
 
             return (
               <div
                 key={num}
-                className={`bg-white rounded-2xl border p-5 transition-all ${isUnlocked ? "border-gray-200 hover:border-[#5d63ff]/40 hover:shadow-sm cursor-pointer" : "border-gray-100 opacity-50 cursor-not-allowed"}`}
+                style={{
+                  background: "#fff",
+                  border: `1px solid ${result ? "#d2d7ff" : isUnlocked ? "#ece8e8" : "#ece8e8"}`,
+                  borderRadius: 12,
+                  padding: "18px 16px",
+                  opacity: isUnlocked ? 1 : 0.5,
+                  transition: "0.2s",
+                }}
               >
-                <div className="flex items-center justify-between mb-3">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm ${result ? "bg-[#5d63ff] text-white" : isUnlocked ? "bg-[#5d63ff]/10 text-[#5d63ff]" : "bg-gray-100 text-gray-400"}`}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+                  <div style={{
+                    width: 40, height: 40, borderRadius: 10,
+                    background: result ? "#5d6eff" : isUnlocked ? "#eeefff" : "#f5f5f5",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontWeight: 700, fontSize: "1.4rem",
+                    color: result ? "#fff" : isUnlocked ? "#5d6eff" : "#aaa",
+                  }}>
                     {result ? "✓" : num}
                   </div>
+
                   {!isUnlocked && (
-                    <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                    </svg>
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="#aaa"><path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"/></svg>
                   )}
+
                   {bestMark !== null && (
-                    <span className={`text-xs font-semibold px-2 py-1 rounded-full ${bestMark >= maxMark * 0.75 ? "bg-green-100 text-green-700" : bestMark >= maxMark * 0.5 ? "bg-yellow-100 text-yellow-700" : "bg-red-100 text-red-600"}`}>
+                    <span style={{
+                      fontSize: "1.2rem", fontWeight: 700, padding: "2px 8px", borderRadius: 20,
+                      background: passed ? "#d4edda" : "#ffeeba",
+                      color: passed ? "#155724" : "#856404",
+                    }}>
                       {bestMark}/{maxMark}
                     </span>
                   )}
                 </div>
-                <p className="font-semibold text-gray-900 text-sm">Ikizami {num < 10 ? `0${num}` : num}</p>
-                <p className="text-xs text-gray-500 mt-0.5">{testType === "keywords" ? "5 ibibazo" : "20 ibibazo"}</p>
+
+                <p style={{ fontWeight: 700, fontSize: "1.5rem", color: "#202842" }}>
+                  Ikizami {num < 10 ? `0${num}` : num}
+                </p>
+                <p style={{ fontSize: "1.2rem", color: "rgba(32,40,66,0.55)", marginTop: 2 }}>
+                  {testType === "keywords" ? "5 ibibazo" : "20 ibibazo"}
+                </p>
+
                 {isUnlocked && (
                   <Link
                     href={`/test?type=${testType}&num=${num}`}
-                    className="mt-3 w-full block text-center py-2 rounded-xl text-xs font-semibold bg-[#5d63ff]/10 text-[#5d63ff] hover:bg-[#5d63ff] hover:text-white transition-all"
+                    className="btn btn-primary"
+                    style={{ marginTop: 12, height: 38, width: "100%", fontSize: "1.3rem", display: "flex", justifyContent: "center" }}
                   >
                     {result ? "Subiramo" : "Tangira"}
                   </Link>
@@ -88,6 +114,11 @@ export default async function LevelsPage({ searchParams }: { searchParams: Promi
           })}
         </div>
       </div>
+
+      <footer className="app-footer">
+        <p>&copy; Copyright 2025 RoadReady - A Binary Solutions Company.</p>
+        <p>Designed By ClaroCreatives</p>
+      </footer>
     </div>
   );
 }
