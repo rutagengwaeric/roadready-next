@@ -16,6 +16,8 @@ export default async function AppDashboard() {
   if (!user) redirect("/login");
   if (!(await hasActivePayment(user.id))) redirect("/payment");
 
+  const now = new Date();
+
   const payment = await prisma.payment.findFirst({
     where: { userId: user.id, paymentExpirationDate: { gte: new Date() } },
     orderBy: { paymentExpirationDate: "desc" },
@@ -39,11 +41,12 @@ export default async function AppDashboard() {
   const keywordProgressPct = Math.round((doneKeywords / 4) * 100);
 
   const expiresIn = payment
-    ? Math.ceil((new Date(payment.paymentExpirationDate).getTime() - Date.now()) / 86_400_000)
+    ? Math.ceil((new Date(payment.paymentExpirationDate).getTime() - now.getTime()) / 86_400_000)
     : 0;
-  const expiryStr = payment
-    ? new Date(payment.paymentExpirationDate).toLocaleDateString("fr-RW", { day: "2-digit", month: "long", year: "numeric" })
-    : "";
+  const expiryStr = payment ? (() => {
+    const d = new Date(payment.paymentExpirationDate);
+    return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+  })() : "";
   const plan = payment ? getPlan(Number(payment.amountPaid)) : null;
 
   const motivMsg = chancePct >= 80
@@ -133,7 +136,7 @@ export default async function AppDashboard() {
                     <span style={{ fontSize: "1.3rem", fontWeight: 600, color: plan.color }}>Plan {plan.name}</span>
                   </div>
                   <span style={{ fontSize: "1.15rem", fontWeight: 600, color: expiresIn <= 3 ? "#ef4444" : "#94a3b8" }}>
-                    {expiresIn}j isigaye
+                    {expiresIn} isigaye
                   </span>
                 </div>
 
@@ -193,7 +196,7 @@ export default async function AppDashboard() {
           </form>
 
           <p style={{ fontSize: "1.1rem", color: "#cbd5e1", textAlign: "center", lineHeight: 1.6 }}>
-            &copy; 2025 RoadReady &mdash; Binary Solutions
+            &copy; {new Date().getFullYear()} RoadReady &mdash; Binary Solutions
           </p>
         </aside>
 

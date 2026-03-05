@@ -200,7 +200,7 @@ export default async function LevelsPage({ searchParams }: { searchParams: Promi
       </div>
 
       <footer style={{ textAlign: "center", padding: "20px", borderTop: "1px solid #f1f5f9" }}>
-        <p style={{ fontSize: "1.2rem", color: "#cbd5e1" }}>&copy; 2025 RoadReady &mdash; A Binary Solutions Company</p>
+        <p style={{ fontSize: "1.2rem", color: "#cbd5e1" }}>&copy; {new Date().getFullYear()} RoadReady &mdash; A Binary Solutions Company</p>
       </footer>
 
       <style>{`

@@ -198,7 +198,7 @@ export default function TestClient({ testType, testNumber, existing }: TestClien
         </div>
 
         <footer style={{ textAlign: "center", padding: "16px", borderTop: "1px solid #f1f5f9" }}>
-          <p style={{ fontSize: "1.15rem", color: "#cbd5e1" }}>&copy; 2025 RoadReady &mdash; Binary Solutions</p>
+          <p style={{ fontSize: "1.15rem", color: "#cbd5e1" }}>&copy; {new Date().getFullYear()} RoadReady &mdash; Binary Solutions</p>
         </footer>
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
@@ -331,7 +331,7 @@ export default function TestClient({ testType, testNumber, existing }: TestClien
       </div>
 
       <footer style={{ textAlign: "center", padding: "14px", borderTop: "1px solid #f1f5f9" }}>
-        <p style={{ fontSize: "1.15rem", color: "#cbd5e1" }}>&copy; 2025 RoadReady &mdash; Binary Solutions</p>
+        <p style={{ fontSize: "1.15rem", color: "#cbd5e1" }}>&copy; {new Date().getFullYear()} RoadReady &mdash; Binary Solutions</p>
       </footer>
 
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>

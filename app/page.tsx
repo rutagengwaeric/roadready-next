@@ -288,7 +288,7 @@ export default function LandingPage() {
 
       {/* ══ FOOTER ══ */}
       <footer className="app-footer">
-        <p>&copy; Copyright 2025 RoadReady — A Binary Solutions Company. All rights reserved.</p>
+        <p>&copy; Copyright {new Date().getFullYear()} RoadReady — A Binary Solutions Company. All rights reserved.</p>
         <p>Designed By Binary Solutions</p>
       </footer>
     </div>
