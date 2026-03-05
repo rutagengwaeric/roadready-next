@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 export default function RegisterPage() {
   const router = useRouter();
   const [form, setForm] = useState({ username: "", email: "", phone: "", password: "", confirm: "" });
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -24,7 +25,7 @@ export default function RegisterPage() {
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: form.username, email: form.email, phone: `250${form.phone}`, password: form.password }),
+        body: JSON.stringify({ username: form.username, email: form.email, phone: form.phone, password: form.password }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -48,7 +49,7 @@ export default function RegisterPage() {
 
       {/* ── LEFT PANEL — brand side (hidden on mobile) ── */}
       <div className="hidden md:flex w-[46%] shrink-0 flex-col items-center justify-between p-10 relative overflow-hidden"
-           style={{ background: "linear-gradient(145deg, #5d6eff 0%, #4349c8 100%)" }}>
+        style={{ background: "linear-gradient(145deg, #5d6eff 0%, #4349c8 100%)" }}>
 
         {/* Background decorations */}
         <div className="absolute -top-20 -left-20 w-[400px] h-[400px] rounded-full opacity-10 bg-white" />
@@ -65,7 +66,7 @@ export default function RegisterPage() {
           <Image src="/assets/images/hero-banner 1.png" alt="App Preview" width={340} height={280}
             className="w-full max-w-[300px] mx-auto mb-8 object-contain drop-shadow-2xl" />
           <h2 className="text-[2.8rem] font-black leading-tight mb-3">
-            Tangira Ubutumire<br/>Bwawe Ubu Nonaha
+            Tangira Ubutumire<br />Bwawe Ubu Nonaha
           </h2>
           <p className="text-white/70 text-[1.4rem] leading-[1.6] max-w-[36ch] mx-auto">
             Fungura konti uhabwe amahirwe yo kwimenyereza ibizami by&apos;inzira — aho waba uri hose
@@ -74,7 +75,7 @@ export default function RegisterPage() {
 
         {/* Bottom stats */}
         <div className="flex items-center gap-8 z-10">
-          {[["260+","Batsinze"],["450+","Imyitozo"],["4.9★","Rating"]].map(([v,l]) => (
+          {[["260+", "Batsinze"], ["450+", "Imyitozo"], ["4.9★", "Rating"]].map(([v, l]) => (
             <div key={l} className="text-center">
               <p className="text-[2rem] font-black text-white">{v}</p>
               <p className="text-[1.2rem] text-white/60">{l}</p>
@@ -104,7 +105,7 @@ export default function RegisterPage() {
             {error && (
               <div className="mb-5 flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
                 <svg className="shrink-0 mt-[2px]" width="16" height="16" viewBox="0 0 20 20" fill="none">
-                  <path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm0 4v4m0 4h.01" stroke="#e53e3e" strokeWidth="1.8" strokeLinecap="round"/>
+                  <path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm0 4v4m0 4h.01" stroke="#e53e3e" strokeWidth="1.8" strokeLinecap="round" />
                 </svg>
                 <p className="text-[1.3rem] text-red-700">{error}</p>
               </div>
@@ -141,44 +142,65 @@ export default function RegisterPage() {
               {/* Phone */}
               <div>
                 <label className="block text-[1.3rem] font-semibold text-[#202842] mb-2">Nomero ya telefoni</label>
-                <div className="flex rounded-xl overflow-hidden border border-[#c3c3c3] focus-within:border-[#5d6eff] focus-within:ring-2 focus-within:ring-[#5d6eff]/15 transition-all">
-                  <span className="flex items-center px-4 bg-[#f0f2ff] text-[#5d6eff] text-[1.4rem] font-bold border-r border-[#c3c3c3] shrink-0">
-                    +250
-                  </span>
-                  <input
-                    type="number"
-                    placeholder="7xx xxx xxx"
-                    value={form.phone}
-                    onChange={e => update("phone", e.target.value)}
-                    className="flex-1 px-4 py-3 text-[1.4rem] outline-none bg-white font-[inherit]"
-                    required
-                  />
-                </div>
+                <input
+                  type="tel"
+                  placeholder="078... cyangwa 78... cyangwa 250..."
+                  value={form.phone}
+                  onChange={e => update("phone", e.target.value)}
+                  className="w-full px-4 py-3 text-[1.4rem] border border-[#c3c3c3] rounded-xl outline-none bg-white font-[inherit] transition-all focus:border-[#5d6eff] focus:bg-white focus:ring-2 focus:ring-[#5d6eff]/15"
+                  required
+                />
               </div>
 
               {/* Passwords */}
               <div className="flex gap-3 flex-wrap">
                 <div className="flex-1 min-w-[140px]">
                   <label className="block text-[1.3rem] font-semibold text-[#202842] mb-2">Ijambo ry&apos;ibanga</label>
-                  <input
-                    type="password"
-                    placeholder="Nibura inyuguti 6"
-                    value={form.password}
-                    onChange={e => update("password", e.target.value)}
-                    className="w-full px-4 py-3 text-[1.4rem] border border-[#c3c3c3] rounded-xl outline-none font-[inherit] bg-[#f9f9f9] focus:bg-white focus:border-[#5d6eff] focus:ring-2 focus:ring-[#5d6eff]/15 transition-all"
-                    required
-                  />
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Nibura inyuguti 6"
+                      value={form.password}
+                      onChange={e => update("password", e.target.value)}
+                      className="w-full px-4 py-3 pr-12 text-[1.4rem] border border-[#c3c3c3] rounded-xl outline-none font-[inherit] bg-[#f9f9f9] focus:bg-white focus:border-[#5d6eff] focus:ring-2 focus:ring-[#5d6eff]/15 transition-all"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#202842]/40 hover:text-[#5d6eff] hover:bg-[#5d6eff]/10 p-1.5 rounded-lg transition-all"
+                    >
+                      {showPassword ? (
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22" /></svg>
+                      ) : (
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
+                      )}
+                    </button>
+                  </div>
                 </div>
                 <div className="flex-1 min-w-[140px]">
                   <label className="block text-[1.3rem] font-semibold text-[#202842] mb-2">Ponovera</label>
-                  <input
-                    type="password"
-                    placeholder="Ongera wandike"
-                    value={form.confirm}
-                    onChange={e => update("confirm", e.target.value)}
-                    className="w-full px-4 py-3 text-[1.4rem] border border-[#c3c3c3] rounded-xl outline-none font-[inherit] bg-[#f9f9f9] focus:bg-white focus:border-[#5d6eff] focus:ring-2 focus:ring-[#5d6eff]/15 transition-all"
-                    required
-                  />
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Ongera wandike"
+                      value={form.confirm}
+                      onChange={e => update("confirm", e.target.value)}
+                      className="w-full px-4 py-3 pr-12 text-[1.4rem] border border-[#c3c3c3] rounded-xl outline-none font-[inherit] bg-[#f9f9f9] focus:bg-white focus:border-[#5d6eff] focus:ring-2 focus:ring-[#5d6eff]/15 transition-all"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#202842]/40 hover:text-[#5d6eff] hover:bg-[#5d6eff]/10 p-1.5 rounded-lg transition-all"
+                    >
+                      {showPassword ? (
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22" /></svg>
+                      ) : (
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
 

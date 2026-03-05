@@ -22,6 +22,9 @@ export default function ProfilePage() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showCurrentPwd, setShowCurrentPwd] = useState(false);
+  const [showNewPwd, setShowNewPwd] = useState(false);
+  const [showConfirmPwd, setShowConfirmPwd] = useState(false);
   const [pwdMsg, setPwdMsg] = useState("");
   const [pwdErr, setPwdErr] = useState("");
   const [savingPwd, setSavingPwd] = useState(false);
@@ -91,7 +94,7 @@ export default function ProfilePage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Habaye ikibazo mu guhindura ijambo ry'ibanga");
-      
+
       setPwdMsg("Ijambo ry'ibanga ryahinduwe neza!");
       setCurrentPassword("");
       setNewPassword("");
@@ -121,12 +124,12 @@ export default function ProfilePage() {
       {/* ── HEADER ── */}
       <header className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-[#ece8e8] flex items-center px-4 md:px-8 z-40 justify-between">
         <Link href="/app" className="shrink-0 group flex items-center gap-2">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#202842]/50 group-hover:text-[#5d6eff] transition-colors"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#202842]/50 group-hover:text-[#5d6eff] transition-colors"><line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" /></svg>
           <span className="font-semibold text-[1.4rem] text-[#202842]/70 group-hover:text-[#5d6eff] transition-colors hidden sm:block">Subira inyuma</span>
         </Link>
         <div className="flex items-center gap-4">
           <button onClick={handleLogout} className="flex items-center gap-2 text-red-500 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors font-semibold text-[1.3rem]">
-            Sohoka <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sohoka <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
           </button>
         </div>
       </header>
@@ -134,7 +137,7 @@ export default function ProfilePage() {
       <main className="flex-1 w-full max-w-[900px] mx-auto px-6 py-28 gap-8 grid md:grid-cols-[1fr_340px]">
         {/* Left Column - Forms */}
         <div className="flex flex-col gap-8">
-          
+
           {/* General Info */}
           <section className="bg-white rounded-2xl p-6 md:p-8 border border-[#ece8e8]" style={{ boxShadow: "0 4px 20px rgba(0,0,0,0.03)" }}>
             <h2 className="text-[2rem] font-bold mb-2">Umwirondoro wawe</h2>
@@ -147,7 +150,7 @@ export default function ProfilePage() {
                 {profileErr}
               </div>
             )}
-            
+
             {profileMsg && (
               <div className="bg-[#ecfdf5] text-[#047857] px-4 py-3 rounded-xl mb-6 text-[1.3rem]">
                 {profileMsg}
@@ -189,7 +192,7 @@ export default function ProfilePage() {
                 {pwdErr}
               </div>
             )}
-            
+
             {pwdMsg && (
               <div className="bg-[#ecfdf5] text-[#047857] px-4 py-3 rounded-xl mb-6 text-[1.3rem]">
                 {pwdMsg}
@@ -199,15 +202,42 @@ export default function ProfilePage() {
             <form onSubmit={handlePasswordUpdate} className="flex flex-col gap-5">
               <div>
                 <label className="block text-[1.3rem] font-semibold mb-2">Ijambo ry'ibanga ryicyo gihe</label>
-                <input type="password" value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} required className="w-full bg-[#f8f7ff] border border-[#ece8e8] rounded-xl px-4 py-3 text-[1.4rem] outline-none focus:border-[#5d6eff] focus:bg-white transition-colors" />
+                <div className="relative">
+                  <input type={showCurrentPwd ? "text" : "password"} value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} required className="w-full bg-[#f8f7ff] border border-[#ece8e8] rounded-xl px-4 py-3 pr-12 text-[1.4rem] outline-none focus:border-[#5d6eff] focus:bg-white transition-colors" />
+                  <button type="button" onClick={() => setShowCurrentPwd(!showCurrentPwd)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#202842]/40 hover:text-[#5d6eff] hover:bg-[#5d6eff]/10 p-1.5 rounded-lg transition-all">
+                    {showCurrentPwd ? (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22" /></svg>
+                    ) : (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
+                    )}
+                  </button>
+                </div>
               </div>
               <div>
                 <label className="block text-[1.3rem] font-semibold mb-2">Ijambo ry'ibanga rishya</label>
-                <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} required className="w-full bg-[#f8f7ff] border border-[#ece8e8] rounded-xl px-4 py-3 text-[1.4rem] outline-none focus:border-[#5d6eff] focus:bg-white transition-colors" />
+                <div className="relative">
+                  <input type={showNewPwd ? "text" : "password"} value={newPassword} onChange={e => setNewPassword(e.target.value)} required className="w-full bg-[#f8f7ff] border border-[#ece8e8] rounded-xl px-4 py-3 pr-12 text-[1.4rem] outline-none focus:border-[#5d6eff] focus:bg-white transition-colors" />
+                  <button type="button" onClick={() => setShowNewPwd(!showNewPwd)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#202842]/40 hover:text-[#5d6eff] hover:bg-[#5d6eff]/10 p-1.5 rounded-lg transition-all">
+                    {showNewPwd ? (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22" /></svg>
+                    ) : (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
+                    )}
+                  </button>
+                </div>
               </div>
               <div>
                 <label className="block text-[1.3rem] font-semibold mb-2">Emeza iryashya</label>
-                <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required className="w-full bg-[#f8f7ff] border border-[#ece8e8] rounded-xl px-4 py-3 text-[1.4rem] outline-none focus:border-[#5d6eff] focus:bg-white transition-colors" />
+                <div className="relative">
+                  <input type={showConfirmPwd ? "text" : "password"} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required className="w-full bg-[#f8f7ff] border border-[#ece8e8] rounded-xl px-4 py-3 pr-12 text-[1.4rem] outline-none focus:border-[#5d6eff] focus:bg-white transition-colors" />
+                  <button type="button" onClick={() => setShowConfirmPwd(!showConfirmPwd)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#202842]/40 hover:text-[#5d6eff] hover:bg-[#5d6eff]/10 p-1.5 rounded-lg transition-all">
+                    {showConfirmPwd ? (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22" /></svg>
+                    ) : (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
+                    )}
+                  </button>
+                </div>
               </div>
               <button type="submit" disabled={savingPwd || !currentPassword || !newPassword} className="btn bg-[#202842] text-white hover:bg-black self-start mt-2 px-8" style={{ height: 46, fontSize: "1.4rem" }}>
                 {savingPwd ? "Tegereza..." : "Hindura ijambo ry'ibanga"}
@@ -225,7 +255,7 @@ export default function ProfilePage() {
             </div>
             <h3 className="text-[2.2rem] font-bold">{user?.username}</h3>
             <p className="text-white/60 text-[1.4rem] mb-6">{user?.email}</p>
-            
+
             <div className="bg-white/5 rounded-xl p-4 border border-white/10">
               <p className="text-white/40 uppercase tracking-widest text-[1.1rem] font-bold mb-1">Status y'Ifatabuguzi</p>
               {user?.hasActiveSubscription ? (

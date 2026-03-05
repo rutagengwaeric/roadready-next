@@ -2,14 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
 import { signToken } from "@/lib/auth";
+import { normalizePhone } from "@/lib/utils";
 
 export async function POST(req: NextRequest) {
   try {
-    const { phone, password } = await req.json();
+    const { phone: rawPhone, password } = await req.json();
 
-    if (!phone || !password) {
+    if (!rawPhone || !password) {
       return NextResponse.json({ error: "missing_fields" }, { status: 400 });
     }
+
+    const phone = normalizePhone(rawPhone);
 
     const user = await prisma.user.findUnique({ where: { phone } });
 

@@ -1,14 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
+import { normalizePhone } from "@/lib/utils";
 
 export async function POST(req: NextRequest) {
   try {
-    const { username, email, phone, password } = await req.json();
+    const { username, email, phone: rawPhone, password } = await req.json();
 
-    if (!username || !email || !phone || !password) {
+    if (!username || !email || !rawPhone || !password) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
+
+    const phone = normalizePhone(rawPhone);
 
     const existing = await prisma.user.findFirst({
       where: { OR: [{ email }, { phone }] },
