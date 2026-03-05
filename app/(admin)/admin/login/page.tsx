@@ -21,12 +21,12 @@ export default function AdminLoginPage() {
         body: JSON.stringify({ email, password }),
       });
       if (!res.ok) {
-        setError("Email cyangwa password sibyo.");
+        setError("Invalid email or password.");
       } else {
         router.push("/admin");
       }
     } catch {
-      setError("Hari ikibazo. Gerageza nanone.");
+      setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -89,7 +89,7 @@ export default function AdminLoginPage() {
             >
               {loading ? (
                 <span style={{ width: 20, height: 20, border: "3px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", display: "block", animation: "spin 0.7s linear infinite" }} />
-              ) : "Injira"}
+              ) : "Sign In"}
             </button>
           </form>
         </div>

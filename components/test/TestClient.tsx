@@ -152,8 +152,9 @@ export default function TestClient({ testType, testNumber, existing }: TestClien
 
   /* ── RESULT ── */
   if (phase === "result") {
-    const passed = correct >= passScore;
-    const perfect = correct === numQ;
+    const actualPassScore = Math.min(passScore, Math.ceil(questions.length * (passScore / numQ)));
+    const passed = correct >= actualPassScore;
+    const perfect = correct === questions.length;
     return (
       <div style={{ minHeight: "100vh", backgroundColor: "#f9f5ff", display: "flex", flexDirection: "column" }}>
         {/* Top bar */}
@@ -173,8 +174,8 @@ export default function TestClient({ testType, testNumber, existing }: TestClien
               {perfect
                 ? `Bravo! Ubashije kuzuzuza ikizami cya ${testNumber < 10 ? `0${testNumber}` : testNumber}, Komerezaho!`
                 : passed
-                ? `Warangije neza! Uracyabura amanota ${wrong} gusa.`
-                : `Oops! Usabwe kubona nibura ${passScore} kugirango ukomeze.`}
+                  ? `Warangije neza! Uracyabura amanota ${wrong} gusa.`
+                  : `Oops! Usabwe kubona nibura ${actualPassScore} kugirango ukomeze.`}
             </p>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -218,7 +219,7 @@ export default function TestClient({ testType, testNumber, existing }: TestClien
         <div style={{ maxWidth: 640, margin: "0 auto", padding: "12px 16px" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
             <button onClick={() => router.back()} style={{ width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8, border: "1px solid #eee", background: "#fff" }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5d6eff" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5d6eff" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
             </button>
             <div style={{ textAlign: "center" }}>
               <p style={{ fontSize: "1.1rem", fontWeight: 600, color: "rgba(32,40,66,0.5)", letterSpacing: 1 }}>

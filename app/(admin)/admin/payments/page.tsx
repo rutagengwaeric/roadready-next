@@ -6,10 +6,10 @@ import Image from "next/image";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 
 const planLabel = (amount: number) => {
-  if (amount === 900) return "Bronze — Umunsi";
-  if (amount === 2000) return "Silver — Icyumweru";
-  if (amount === 3000) return "Gold — Ibyumweru 2";
-  if (amount === 5000) return "Diamond — Ukwezi";
+  if (amount === 900) return "Bronze — 1 Day";
+  if (amount === 2000) return "Silver — 1 Week";
+  if (amount === 3000) return "Gold — 2 Weeks";
+  if (amount === 5000) return "Diamond — 1 Month";
   return `${amount} RWF`;
 };
 
@@ -49,9 +49,9 @@ export default async function AdminPaymentsPage({ searchParams }: { searchParams
 
       <main style={{ flex: 1, marginLeft: 240, padding: "32px 36px", overflowY: "auto", minHeight: "100vh" }}>
         <div style={{ marginBottom: 24 }}>
-          <h1 style={{ fontSize: "2.4rem", fontWeight: 700, color: "#fff" }}>Payments Zose</h1>
+          <h1 style={{ fontSize: "2.4rem", fontWeight: 700, color: "#fff" }}>All Payments</h1>
           <p style={{ fontSize: "1.3rem", color: "rgba(255,255,255,0.45)", marginTop: 4 }}>
-            Revenue yose:{" "}
+            Total Revenue:{" "}
             <span style={{ color: "#68d391", fontWeight: 700 }}>{totalRevenue.toLocaleString()} RWF</span>
           </p>
         </div>
@@ -61,7 +61,7 @@ export default async function AdminPaymentsPage({ searchParams }: { searchParams
             <table style={{ width: "100%", borderCollapse: "collapse" }}>
               <thead>
                 <tr style={{ borderBottom: "1px solid #2a2d4a" }}>
-                  {["Umukoresha", "Plan", "Ref", "Igihe", "Status"].map(h => (
+                  {["User", "Plan", "Ref", "Date", "Status"].map(h => (
                     <th key={h} style={{ padding: "14px 20px", textAlign: "left", fontSize: "1.1rem", fontWeight: 600, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: 1 }}>{h}</th>
                   ))}
                 </tr>
@@ -93,7 +93,7 @@ export default async function AdminPaymentsPage({ searchParams }: { searchParams
                       </td>
                       <td style={{ padding: "14px 20px" }}>
                         <span style={{ display: "inline-flex", alignItems: "center", gap: 6, background: active ? "rgba(72,187,120,0.15)" : "rgba(255,255,255,0.05)", color: active ? "#68d391" : "rgba(255,255,255,0.3)", padding: "3px 10px", borderRadius: 20, fontSize: "1.2rem", fontWeight: 600 }}>
-                          ● {active ? "Ifite" : "Irangiranye"}
+                          ● {active ? "Active" : "Expired"}
                         </span>
                       </td>
                     </tr>
@@ -103,7 +103,7 @@ export default async function AdminPaymentsPage({ searchParams }: { searchParams
             </table>
           </div>
           {payments.length === 0 && (
-            <p style={{ padding: "40px 20px", textAlign: "center", color: "rgba(255,255,255,0.3)", fontSize: "1.4rem" }}>Nta payment iboneka.</p>
+            <p style={{ padding: "40px 20px", textAlign: "center", color: "rgba(255,255,255,0.3)", fontSize: "1.4rem" }}>No payments found.</p>
           )}
         </div>
 

@@ -37,8 +37,8 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
 
       <main style={{ flex: 1, marginLeft: 240, padding: "32px 36px", overflowY: "auto", minHeight: "100vh" }}>
         <div style={{ marginBottom: 24 }}>
-          <h1 style={{ fontSize: "2.4rem", fontWeight: 700, color: "#fff" }}>Abakoresha</h1>
-          <p style={{ fontSize: "1.3rem", color: "rgba(255,255,255,0.45)", marginTop: 4 }}>{total} mukoresha wose</p>
+          <h1 style={{ fontSize: "2.4rem", fontWeight: 700, color: "#fff" }}>Users</h1>
+          <p style={{ fontSize: "1.3rem", color: "rgba(255,255,255,0.45)", marginTop: 4 }}>{total} total users</p>
         </div>
 
         {/* Search */}
@@ -47,10 +47,10 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
             <input
               name="search"
               defaultValue={search}
-              placeholder="Shakisha amazina, imeri, cyangwa nomero..."
+              placeholder="Search by name, email, or phone..."
               style={{ flex: 1, backgroundColor: "#12152a", border: "1px solid #2a2d4a", borderRadius: 10, padding: "10px 16px", color: "#fff", fontSize: "1.4rem", outline: "none", fontFamily: "inherit" }}
             />
-            <button type="submit" className="btn btn-primary" style={{ height: 44, paddingInline: 20, fontSize: "1.3rem" }}>Shakisha</button>
+            <button type="submit" className="btn btn-primary" style={{ height: 44, paddingInline: 20, fontSize: "1.3rem" }}>Search</button>
           </div>
         </form>
 
@@ -60,7 +60,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
             <table style={{ width: "100%", borderCollapse: "collapse" }}>
               <thead>
                 <tr style={{ borderBottom: "1px solid #2a2d4a" }}>
-                  {["Umukoresha", "Telefoni", "Subscription", "Yiyandikishije"].map(h => (
+                  {["User", "Phone", "Subscription", "Registered"].map(h => (
                     <th key={h} style={{ padding: "14px 20px", textAlign: "left", fontSize: "1.1rem", fontWeight: 600, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: 1 }}>{h}</th>
                   ))}
                 </tr>
@@ -78,11 +78,11 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
                       <td style={{ padding: "14px 20px" }}>
                         {activePayment ? (
                           <span style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(72,187,120,0.15)", color: "#68d391", padding: "3px 10px", borderRadius: 20, fontSize: "1.2rem", fontWeight: 600 }}>
-                            ● Ifite — {new Date(activePayment.paymentExpirationDate).toLocaleDateString()}
+                            ● Active — {new Date(activePayment.paymentExpirationDate).toLocaleDateString()}
                           </span>
                         ) : (
                           <span style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(252,129,129,0.15)", color: "#fc8181", padding: "3px 10px", borderRadius: 20, fontSize: "1.2rem", fontWeight: 600 }}>
-                            ● Ntayihari
+                            ● Inactive
                           </span>
                         )}
                       </td>
@@ -96,7 +96,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
             </table>
           </div>
           {users.length === 0 && (
-            <p style={{ padding: "40px 20px", textAlign: "center", color: "rgba(255,255,255,0.3)", fontSize: "1.4rem" }}>Nta mukoresha uboneka.</p>
+            <p style={{ padding: "40px 20px", textAlign: "center", color: "rgba(255,255,255,0.3)", fontSize: "1.4rem" }}>No users found.</p>
           )}
         </div>
 
