@@ -35,7 +35,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
     <div style={{ minHeight: "100vh", backgroundColor: "#13162b", display: "flex", fontFamily: "inherit" }}>
       <AdminSidebar />
 
-      <main style={{ flex: 1, marginLeft: 240, padding: "32px 36px", overflowY: "auto", minHeight: "100vh" }}>
+      <main className="admin-main" style={{ flex: 1, overflowY: "auto", minHeight: "100vh" }}>
         <div style={{ marginBottom: 24 }}>
           <h1 style={{ fontSize: "2.4rem", fontWeight: 700, color: "#fff" }}>Users</h1>
           <p style={{ fontSize: "1.3rem", color: "rgba(255,255,255,0.45)", marginTop: 4 }}>{total} total users</p>
@@ -113,6 +113,14 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
           </div>
         )}
       </main>
+
+      <style>{`
+        .admin-main { margin-left: 240px; padding: 32px 36px; }
+        
+        @media (max-width: 1024px) {
+          .admin-main { margin-left: 0; padding: 100px 20px 32px; }
+        }
+      `}</style>
     </div>
   );
 }

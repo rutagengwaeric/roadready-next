@@ -58,8 +58,8 @@ export default async function AdminTestsPage({ searchParams }: { searchParams: P
         <div style={{ minHeight: "100vh", backgroundColor: "#13162b", display: "flex", fontFamily: "inherit" }}>
             <AdminSidebar />
 
-            <main style={{ flex: 1, marginLeft: 240, padding: "32px 36px", overflowY: "auto", minHeight: "100vh" }}>
-                <div style={{ marginBottom: 24, display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+            <main className="admin-main" style={{ flex: 1, overflowY: "auto", minHeight: "100vh" }}>
+                <div style={{ marginBottom: 24, display: "flex", flexDirection: "column", gap: 12 }}>
                     <div>
                         <h1 style={{ fontSize: "2.8rem", fontWeight: 800, color: "#fff", letterSpacing: "-0.02em" }}>Test Results</h1>
                         <p style={{ fontSize: "1.3rem", color: "rgba(255,255,255,0.45)", marginTop: 6 }}>
@@ -70,7 +70,7 @@ export default async function AdminTestsPage({ searchParams }: { searchParams: P
 
                 {/* Search */}
                 <form style={{ marginBottom: 24 }}>
-                    <div style={{ display: "flex", gap: 10, maxWidth: 500 }}>
+                    <div className="search-container" style={{ display: "flex", gap: 10, maxWidth: 500 }}>
                         <div style={{ position: "relative", flex: 1 }}>
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)" }}>
                                 <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -107,13 +107,13 @@ export default async function AdminTestsPage({ searchParams }: { searchParams: P
                                 backgroundColor: "#12152a", border: "1px solid #2a2d4a", borderRadius: 16, overflow: "hidden"
                             }} className="test-card">
                                 <summary style={{ padding: "20px 24px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", listStyle: "none" }}>
-                                    <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                                    <div className="test-card-header" style={{ display: "flex", alignItems: "center", gap: 16 }}>
                                         <div style={{ width: 48, height: 48, borderRadius: "50%", background: "linear-gradient(135deg, #5d6eff, #818cf8)", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: "1.8rem", fontWeight: 700 }}>
                                             {user.username.charAt(0).toUpperCase()}
                                         </div>
                                         <div>
                                             <h2 style={{ fontSize: "1.6rem", fontWeight: 700, color: "#fff" }}>{user.username}</h2>
-                                            <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 4 }}>
+                                            <div className="test-card-contacts" style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 4 }}>
                                                 <span style={{ fontSize: "1.3rem", color: "rgba(255,255,255,0.4)" }}>{user.email}</span>
                                                 <span style={{ width: 4, height: 4, borderRadius: "50%", background: "rgba(255,255,255,0.2)" }} />
                                                 <span style={{ fontSize: "1.3rem", color: "rgba(255,255,255,0.4)" }}>{user.phone}</span>
@@ -220,6 +220,20 @@ export default async function AdminTestsPage({ searchParams }: { searchParams: P
         summary::-webkit-details-marker { display: none; }
         .test-card[open] summary { border-bottom: 1px solid rgba(255,255,255,0.06); }
         .test-card[open] summary .chevron { transform: rotate(180deg); }
+        
+        .admin-main { margin-left: 240px; padding: 32px 36px; }
+        
+        @media (max-width: 1024px) {
+          .admin-main { margin-left: 0; padding: 100px 20px 32px; }
+        }
+        
+        @media (max-width: 600px) {
+          .search-container { flex-direction: column; max-width: 100% !important; }
+          .test-card summary { flex-direction: column; align-items: flex-start !important; gap: 20px; }
+          .test-card-header { align-items: flex-start !important; }
+          .test-card-contacts { flex-direction: column; align-items: flex-start !important; gap: 4px !important; }
+          .test-card-contacts span:nth-child(2) { display: none; }
+        }
       `}</style>
         </div>
     );

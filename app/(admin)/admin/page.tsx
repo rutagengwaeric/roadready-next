@@ -176,7 +176,7 @@ export default async function AdminDashboard() {
     <div style={{ minHeight: "100vh", backgroundColor: "#13162b", display: "flex", fontFamily: "inherit" }}>
       <AdminSidebar />
 
-      <main style={{ flex: 1, marginLeft: 240, padding: "32px 36px", overflowY: "auto", minHeight: "100vh" }}>
+      <main className="admin-main" style={{ flex: 1, overflowY: "auto", minHeight: "100vh" }}>
         {/* Page header */}
         <div style={{ marginBottom: 32, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
           <div>
@@ -385,6 +385,11 @@ export default async function AdminDashboard() {
 
       <style>{`
         .adm-quick-link:hover { filter: brightness(1.1); transform: translateY(-2px); }
+        .admin-main { margin-left: 240px; padding: 32px 36px; }
+        
+        @media (max-width: 1024px) {
+          .admin-main { margin-left: 0; padding: 100px 20px 32px; }
+        }
       `}</style>
     </div>
   );
