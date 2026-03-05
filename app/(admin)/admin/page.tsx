@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { getAdminSession } from "@/lib/auth";
 import prisma from "@/lib/prisma";
+import AdminSidebar from "@/components/admin/AdminSidebar";
 
 async function getStats() {
   const now = new Date();
@@ -20,12 +20,6 @@ async function getStats() {
   };
 }
 
-const navItems = [
-  { href: "/admin", label: "Dashboard", icon: "📊" },
-  { href: "/admin/users", label: "Abakoresha", icon: "👥" },
-  { href: "/admin/payments", label: "Payments", icon: "💳" },
-];
-
 export default async function AdminDashboard() {
   const session = await getAdminSession();
   if (!session) redirect("/admin/login");
@@ -33,83 +27,92 @@ export default async function AdminDashboard() {
   const stats = await getStats();
 
   const cards = [
-    { label: "Abakoresha bose", value: stats.totalUsers, color: "#5d6eff", bg: "#eeefff" },
-    { label: "Payments zose", value: stats.totalPayments, color: "#0ad4c8", bg: "#e6f9f8" },
-    { label: "Subscriptions zifite", value: stats.activeSubscriptions, color: "#9b59b6", bg: "#f3e8ff" },
-    { label: "Revenue (RWF)", value: stats.totalRevenue.toLocaleString(), color: "#e67e22", bg: "#fff3e0" },
+    { label: "Abakoresha bose", value: stats.totalUsers, color: "#818cf8", bg: "rgba(93,110,255,0.12)", border: "rgba(93,110,255,0.2)",
+      icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#818cf8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> },
+    { label: "Payments zose", value: stats.totalPayments, color: "#34d399", bg: "rgba(52,211,153,0.1)", border: "rgba(52,211,153,0.2)",
+      icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34d399" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> },
+    { label: "Active subs", value: stats.activeSubscriptions, color: "#c084fc", bg: "rgba(192,132,252,0.1)", border: "rgba(192,132,252,0.2)",
+      icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c084fc" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> },
+    { label: "Revenue (RWF)", value: stats.totalRevenue.toLocaleString(), color: "#fbbf24", bg: "rgba(251,191,36,0.1)", border: "rgba(251,191,36,0.2)",
+      icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> },
   ];
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#1a1d2e", display: "flex", fontFamily: "inherit" }}>
-      <style>{`
-        .adm-nav-link:hover { background: #2a2d4a !important; color: #fff !important; }
-        .adm-logout:hover { color: #fc8181 !important; }
-        .adm-quick-link:hover { border-color: #5d6eff !important; }
-      `}</style>
-      {/* Sidebar */}
-      <aside style={{ width: 240, backgroundColor: "#12152a", borderRight: "1px solid #2a2d4a", display: "flex", flexDirection: "column", padding: 24, position: "fixed", height: "100vh", top: 0 }}>
-        <div style={{ marginBottom: 32 }}>
-          <Image src="/assets/images/icons/full logo.svg" alt="RoadReady" width={120} height={42} style={{ objectFit: "contain", filter: "brightness(0) invert(1)" }} />
-          <p style={{ fontSize: "1.1rem", color: "rgba(255,255,255,0.4)", marginTop: 6 }}>Admin Panel</p>
-        </div>
-        <nav style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
-          {navItems.map(item => (
-            <Link key={item.href} href={item.href} className="adm-nav-link"
-              style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderRadius: 10, color: "rgba(255,255,255,0.7)", fontSize: "1.4rem", transition: "0.2s", textDecoration: "none" }}
-            >
-              <span>{item.icon}</span>
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-        <form action="/api/admin/logout" method="POST">
-          <button className="adm-logout"
-            style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 14px", borderRadius: 10, color: "rgba(255,255,255,0.4)", fontSize: "1.4rem", width: "100%", cursor: "pointer", transition: "0.2s" }}
-          >
-            🚪 Sohoka
-          </button>
-        </form>
-      </aside>
+    <div style={{ minHeight: "100vh", backgroundColor: "#13162b", display: "flex", fontFamily: "inherit" }}>
+      <AdminSidebar />
 
-      {/* Main */}
-      <main style={{ flex: 1, marginLeft: 240, padding: 32, overflowY: "auto" }}>
-        <div style={{ marginBottom: 28 }}>
-          <h1 style={{ fontSize: "2.4rem", fontWeight: 700, color: "#fff" }}>Dashboard</h1>
-          <p style={{ fontSize: "1.3rem", color: "rgba(255,255,255,0.45)", marginTop: 4 }}>Ikinyamakuru cy&apos;imicungire ya RoadReady</p>
+      <main style={{ flex: 1, marginLeft: 240, padding: "32px 36px", overflowY: "auto", minHeight: "100vh" }}>
+        {/* Page header */}
+        <div style={{ marginBottom: 32, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+          <div>
+            <h1 style={{ fontSize: "2.6rem", fontWeight: 800, color: "#fff", letterSpacing: "-0.02em" }}>Dashboard</h1>
+            <p style={{ fontSize: "1.3rem", color: "rgba(255,255,255,0.4)", marginTop: 4 }}>Ikinyamakuru cy&apos;imicungire ya RoadReady</p>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, padding: "8px 14px" }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span style={{ fontSize: "1.2rem", color: "rgba(255,255,255,0.45)" }}>
+              {new Date().toLocaleDateString("fr-RW", { weekday: "long", day: "2-digit", month: "long", year: "numeric" })}
+            </span>
+          </div>
         </div>
 
         {/* Stats grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16, marginBottom: 28 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16, marginBottom: 32 }}>
           {cards.map(card => (
-            <div key={card.label} style={{ backgroundColor: "#12152a", border: "1px solid #2a2d4a", borderRadius: 16, padding: 20 }}>
-              <div style={{ width: 44, height: 44, borderRadius: 10, background: card.bg, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
-                <span style={{ fontSize: 22 }}>{card.label.includes("Revenue") ? "💰" : card.label.includes("Sub") ? "✅" : card.label.includes("Payment") ? "💳" : "👥"}</span>
+            <div key={card.label} style={{
+              background: "rgba(255,255,255,0.03)",
+              border: `1px solid ${card.border}`,
+              borderRadius: 16, padding: "20px 22px",
+              transition: "0.2s",
+            }}>
+              <div style={{
+                width: 46, height: 46, borderRadius: 12,
+                background: card.bg, border: `1px solid ${card.border}`,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                marginBottom: 16,
+              }}>
+                {card.icon}
               </div>
-              <p style={{ fontSize: "2.8rem", fontWeight: 700, color: card.color }}>{card.value}</p>
-              <p style={{ fontSize: "1.3rem", color: "rgba(255,255,255,0.45)", marginTop: 4 }}>{card.label}</p>
+              <p style={{ fontSize: "3rem", fontWeight: 800, color: card.color, lineHeight: 1 }}>{card.value}</p>
+              <p style={{ fontSize: "1.3rem", color: "rgba(255,255,255,0.4)", marginTop: 6 }}>{card.label}</p>
             </div>
           ))}
         </div>
 
         {/* Quick links */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 16 }}>
+        <p style={{ fontSize: "1.2rem", fontWeight: 700, color: "rgba(255,255,255,0.25)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 14 }}>
+          Ibikoresho Byihuse
+        </p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 16 }}>
           {[
-            { href: "/admin/users", label: "Gucunga Abakoresha", desc: "Reba kandi ucunge abakoresha bose", icon: "👥" },
-            { href: "/admin/payments", label: "Payments Zose", desc: "Reba amateka ya payments yose", icon: "💳" },
+            { href: "/admin/users", label: "Gucunga Abakoresha", desc: "Reba kandi ucunge abakoresha bose", color: "#818cf8", border: "rgba(93,110,255,0.25)", bg: "rgba(93,110,255,0.08)",
+              icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#818cf8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> },
+            { href: "/admin/payments", label: "Payments Zose", desc: "Reba amateka ya payments yose", color: "#34d399", border: "rgba(52,211,153,0.25)", bg: "rgba(52,211,153,0.08)",
+              icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#34d399" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg> },
           ].map(item => (
-            <Link key={item.href} href={item.href} className="adm-quick-link"
-              style={{ display: "block", backgroundColor: "#12152a", border: "1px solid #2a2d4a", borderRadius: 16, padding: 24, textDecoration: "none", transition: "0.2s" }}
+            <Link key={item.href} href={item.href} style={{
+              display: "block", background: item.bg,
+              border: `1px solid ${item.border}`,
+              borderRadius: 16, padding: 24, textDecoration: "none", transition: "0.2s",
+            }}
+              className="adm-quick-link"
             >
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
-                <span style={{ fontSize: 28 }}>{item.icon}</span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
+                <div style={{ width: 48, height: 48, borderRadius: 12, background: "rgba(255,255,255,0.06)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  {item.icon}
+                </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
               </div>
-              <p style={{ fontSize: "1.6rem", fontWeight: 600, color: "#fff" }}>{item.label}</p>
+              <p style={{ fontSize: "1.7rem", fontWeight: 700, color: "#fff" }}>{item.label}</p>
               <p style={{ fontSize: "1.3rem", color: "rgba(255,255,255,0.4)", marginTop: 4 }}>{item.desc}</p>
             </Link>
           ))}
         </div>
       </main>
+
+      <style>{`
+        .adm-quick-link:hover { filter: brightness(1.1); transform: translateY(-2px); }
+      `}</style>
     </div>
   );
 }

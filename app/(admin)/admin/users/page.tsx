@@ -2,13 +2,7 @@ import { redirect } from "next/navigation";
 import { getAdminSession } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import Link from "next/link";
-import Image from "next/image";
-
-const navItems = [
-  { href: "/admin", label: "Dashboard", icon: "📊" },
-  { href: "/admin/users", label: "Abakoresha", icon: "👥" },
-  { href: "/admin/payments", label: "Payments", icon: "💳" },
-];
+import AdminSidebar from "@/components/admin/AdminSidebar";
 
 export default async function AdminUsersPage({ searchParams }: { searchParams: Promise<{ page?: string; search?: string }> }) {
   const session = await getAdminSession();
@@ -38,28 +32,10 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
   const now = new Date();
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#1a1d2e", display: "flex", fontFamily: "inherit" }}>
-      {/* Sidebar */}
-      <aside style={{ width: 240, backgroundColor: "#12152a", borderRight: "1px solid #2a2d4a", display: "flex", flexDirection: "column", padding: 24, position: "fixed", height: "100vh", top: 0 }}>
-        <div style={{ marginBottom: 32 }}>
-          <Image src="/assets/images/icons/full logo.svg" alt="RoadReady" width={120} height={42} style={{ objectFit: "contain", filter: "brightness(0) invert(1)" }} />
-          <p style={{ fontSize: "1.1rem", color: "rgba(255,255,255,0.4)", marginTop: 6 }}>Admin Panel</p>
-        </div>
-        <nav style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
-          {navItems.map(item => (
-            <Link key={item.href} href={item.href} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderRadius: 10, color: "rgba(255,255,255,0.7)", fontSize: "1.4rem", transition: "0.2s", textDecoration: "none" }}>
-              <span>{item.icon}</span>{item.label}
-            </Link>
-          ))}
-        </nav>
-        <form action="/api/admin/logout" method="POST">
-          <button style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 14px", borderRadius: 10, color: "rgba(255,255,255,0.4)", fontSize: "1.4rem", width: "100%", cursor: "pointer" }}>
-            🚪 Sohoka
-          </button>
-        </form>
-      </aside>
+    <div style={{ minHeight: "100vh", backgroundColor: "#13162b", display: "flex", fontFamily: "inherit" }}>
+      <AdminSidebar />
 
-      <main style={{ flex: 1, marginLeft: 240, padding: 32, overflowY: "auto" }}>
+      <main style={{ flex: 1, marginLeft: 240, padding: "32px 36px", overflowY: "auto", minHeight: "100vh" }}>
         <div style={{ marginBottom: 24 }}>
           <h1 style={{ fontSize: "2.4rem", fontWeight: 700, color: "#fff" }}>Abakoresha</h1>
           <p style={{ fontSize: "1.3rem", color: "rgba(255,255,255,0.45)", marginTop: 4 }}>{total} mukoresha wose</p>
