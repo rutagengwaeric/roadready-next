@@ -51,7 +51,7 @@ function LoginForm() {
   return (
     <div className="w-full max-w-[400px]">
       <div className="mb-8">
-        <h1 style={{ fontSize: "2.6rem", fontWeight: 800, color: "#0f172a", marginBottom: 6, lineHeight: 1.1 }}>Ikaza</h1>
+        <h1 style={{ fontSize: "2.6rem", fontWeight: 800, color: "#0f172a", marginBottom: 6, lineHeight: 1.1 }}>Ikaze</h1>
         <p style={{ fontSize: "1.4rem", color: "#64748b" }}>Injira muri konti yawe ya RoadReady</p>
       </div>
 
