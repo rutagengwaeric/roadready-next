@@ -184,7 +184,7 @@ export default function RegisterPage() {
                   </div>
                 </div>
                 <div>
-                  <label style={labelStyle}>Ponovera</label>
+                  <label style={labelStyle}>Subiramo Ijambo ry&apos;ibanga </label>
                   <div style={{ position: "relative" }}>
                     <span style={iconWrap}>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

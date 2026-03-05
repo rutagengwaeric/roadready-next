@@ -122,7 +122,7 @@ function ResetPasswordForm() {
 
             <div>
               <label style={{ display: "block", fontSize: "1.25rem", fontWeight: 600, color: "#334155", marginBottom: 7 }}>
-                Ponovera ijambo ry&apos;ibanga
+                 ijambo ry&apos;ibanga
               </label>
               <div style={{ position: "relative" }}>
                 <span style={iconWrap}>
