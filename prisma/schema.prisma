@@ -8,16 +8,18 @@ datasource db {
 }
 
 model User {
-  id          Int             @id @default(autoincrement())
-  username    String
-  email       String          @unique
-  phone       String          @unique
-  password    String
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-  payments    Payment[]
-  testResults TestResult[]
-  keywords    KeywordResult[]
+  id               Int             @id @default(autoincrement())
+  username         String
+  email            String          @unique
+  phone            String          @unique
+  password         String
+  resetToken       String?         @unique
+  resetTokenExpiry DateTime?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  payments         Payment[]
+  testResults      TestResult[]
+  keywords         KeywordResult[]
 }
 
 model Payment {
