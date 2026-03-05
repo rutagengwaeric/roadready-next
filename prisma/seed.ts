@@ -35,19 +35,19 @@ async function main() {
 
   const paidUsers = [
     {
-      user: { username: "Mugisha Jean", email: "mugisha@test.rw", phone: "0781000001", password: userPassword },
+      user: { username: "Mugisha Jean", email: "mugisha@test.rw", phone: "250781000001", password: userPassword },
       payment: { amountPaid: 5000, paymentExpirationDate: in30Days, paymentRef: "SEED-PAY-001" },
     },
     {
-      user: { username: "Uwase Claudine", email: "uwase@test.rw", phone: "0781000002", password: userPassword },
+      user: { username: "Uwase Claudine", email: "uwase@test.rw", phone: "250781000002", password: userPassword },
       payment: { amountPaid: 3000, paymentExpirationDate: in14Days, paymentRef: "SEED-PAY-002" },
     },
     {
-      user: { username: "Habimana Patrick", email: "habimana@test.rw", phone: "0781000003", password: userPassword },
+      user: { username: "Habimana Patrick", email: "habimana@test.rw", phone: "250781000003", password: userPassword },
       payment: { amountPaid: 2000, paymentExpirationDate: in7Days, paymentRef: "SEED-PAY-003" },
     },
     {
-      user: { username: "Ingabire Solange", email: "ingabire@test.rw", phone: "0781000004", password: userPassword },
+      user: { username: "Ingabire Solange", email: "ingabire@test.rw", phone: "250781000004", password: userPassword },
       payment: { amountPaid: 900, paymentExpirationDate: in1Day, paymentRef: "SEED-PAY-004" },
     },
   ];
@@ -55,7 +55,7 @@ async function main() {
   for (const { user, payment } of paidUsers) {
     const created = await prisma.user.upsert({
       where: { email: user.email },
-      update: {},
+      update: { phone: user.phone },
       create: user,
     });
 

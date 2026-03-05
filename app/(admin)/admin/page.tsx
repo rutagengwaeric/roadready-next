@@ -34,6 +34,11 @@ export default async function AdminDashboard() {
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#1a1d2e", display: "flex", fontFamily: "inherit" }}>
+      <style>{`
+        .adm-nav-link:hover { background: #2a2d4a !important; color: #fff !important; }
+        .adm-logout:hover { color: #fc8181 !important; }
+        .adm-quick-link:hover { border-color: #5d6eff !important; }
+      `}</style>
       {/* Sidebar */}
       <aside style={{ width: 240, backgroundColor: "#12152a", borderRight: "1px solid #2a2d4a", display: "flex", flexDirection: "column", padding: 24, position: "fixed", height: "100vh", top: 0 }}>
         <div style={{ marginBottom: 32 }}>
@@ -42,9 +47,8 @@ export default async function AdminDashboard() {
         </div>
         <nav style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
           {navItems.map(item => (
-            <Link key={item.href} href={item.href} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderRadius: 10, color: "rgba(255,255,255,0.7)", fontSize: "1.4rem", transition: "0.2s", textDecoration: "none" }}
-              onMouseOver={e => { (e.currentTarget as HTMLElement).style.background = "#2a2d4a"; (e.currentTarget as HTMLElement).style.color = "#fff"; }}
-              onMouseOut={e => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.7)"; }}
+            <Link key={item.href} href={item.href} className="adm-nav-link"
+              style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderRadius: 10, color: "rgba(255,255,255,0.7)", fontSize: "1.4rem", transition: "0.2s", textDecoration: "none" }}
             >
               <span>{item.icon}</span>
               {item.label}
@@ -52,9 +56,8 @@ export default async function AdminDashboard() {
           ))}
         </nav>
         <form action="/api/admin/logout" method="POST">
-          <button style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 14px", borderRadius: 10, color: "rgba(255,255,255,0.4)", fontSize: "1.4rem", width: "100%", cursor: "pointer", transition: "0.2s" }}
-            onMouseOver={e => (e.currentTarget.style.color = "#fc8181")}
-            onMouseOut={e => (e.currentTarget.style.color = "rgba(255,255,255,0.4)")}
+          <button className="adm-logout"
+            style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 14px", borderRadius: 10, color: "rgba(255,255,255,0.4)", fontSize: "1.4rem", width: "100%", cursor: "pointer", transition: "0.2s" }}
           >
             🚪 Sohoka
           </button>
@@ -87,9 +90,8 @@ export default async function AdminDashboard() {
             { href: "/admin/users", label: "Gucunga Abakoresha", desc: "Reba kandi ucunge abakoresha bose", icon: "👥" },
             { href: "/admin/payments", label: "Payments Zose", desc: "Reba amateka ya payments yose", icon: "💳" },
           ].map(item => (
-            <Link key={item.href} href={item.href} style={{ display: "block", backgroundColor: "#12152a", border: "1px solid #2a2d4a", borderRadius: 16, padding: 24, textDecoration: "none", transition: "0.2s" }}
-              onMouseOver={e => (e.currentTarget as HTMLElement).style.borderColor = "#5d6eff"}
-              onMouseOut={e => (e.currentTarget as HTMLElement).style.borderColor = "#2a2d4a"}
+            <Link key={item.href} href={item.href} className="adm-quick-link"
+              style={{ display: "block", backgroundColor: "#12152a", border: "1px solid #2a2d4a", borderRadius: 16, padding: 24, textDecoration: "none", transition: "0.2s" }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
                 <span style={{ fontSize: 28 }}>{item.icon}</span>
