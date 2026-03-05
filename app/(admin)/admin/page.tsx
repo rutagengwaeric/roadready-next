@@ -2,15 +2,22 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { getAdminSession } from "@/lib/auth";
+import prisma from "@/lib/prisma";
 
 async function getStats() {
-  const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3001";
-  try {
-    const res = await fetch(`${baseUrl}/api/admin/stats`, { cache: "no-store" });
-    return res.json();
-  } catch {
-    return { totalUsers: 0, totalPayments: 0, activeSubscriptions: 0, totalRevenue: 0 };
-  }
+  const now = new Date();
+  const [totalUsers, totalPayments, activeSubscriptions, revenue] = await Promise.all([
+    prisma.user.count(),
+    prisma.payment.count(),
+    prisma.payment.count({ where: { paymentExpirationDate: { gte: now } } }),
+    prisma.payment.aggregate({ _sum: { amountPaid: true } }),
+  ]);
+  return {
+    totalUsers,
+    totalPayments,
+    activeSubscriptions,
+    totalRevenue: Number(revenue._sum.amountPaid ?? 0),
+  };
 }
 
 const navItems = [
@@ -29,7 +36,7 @@ export default async function AdminDashboard() {
     { label: "Abakoresha bose", value: stats.totalUsers, color: "#5d6eff", bg: "#eeefff" },
     { label: "Payments zose", value: stats.totalPayments, color: "#0ad4c8", bg: "#e6f9f8" },
     { label: "Subscriptions zifite", value: stats.activeSubscriptions, color: "#9b59b6", bg: "#f3e8ff" },
-    { label: "Revenue (RWF)", value: Number(stats.totalRevenue).toLocaleString(), color: "#e67e22", bg: "#fff3e0" },
+    { label: "Revenue (RWF)", value: stats.totalRevenue.toLocaleString(), color: "#e67e22", bg: "#fff3e0" },
   ];
 
   return (
