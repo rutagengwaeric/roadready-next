@@ -28,10 +28,14 @@ export default async function AdminTestsPage({ searchParams }: { searchParams: P
     const [users, total] = await Promise.all([
         prisma.user.findMany({
             where: {
-                ...where,
-                OR: [
-                    { testResults: { some: {} } },
-                    { keywords: { some: {} } }
+                AND: [
+                    where,
+                    {
+                        OR: [
+                            { testResults: { some: {} } },
+                            { keywords: { some: {} } }
+                        ]
+                    }
                 ]
             },
             skip: (page - 1) * limit,
@@ -44,10 +48,14 @@ export default async function AdminTestsPage({ searchParams }: { searchParams: P
         }),
         prisma.user.count({
             where: {
-                ...where,
-                OR: [
-                    { testResults: { some: {} } },
-                    { keywords: { some: {} } }
+                AND: [
+                    where,
+                    {
+                        OR: [
+                            { testResults: { some: {} } },
+                            { keywords: { some: {} } }
+                        ]
+                    }
                 ]
             }
         }),
