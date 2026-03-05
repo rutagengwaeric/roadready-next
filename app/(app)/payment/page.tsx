@@ -4,6 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+async function logout() {
+  await fetch("/api/auth/logout", { method: "POST" });
+  window.location.href = "/login";
+}
+
 const plans = [
   {
     amount: 900,
@@ -146,12 +151,23 @@ export default function PaymentPage() {
           <Link href="/app" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}>
             <Image src="/assets/images/icons/full logo.svg" alt="RoadReady" width={100} height={34} style={{ objectFit: "contain" }} />
           </Link>
-          <Link href="/app" style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "1.3rem", fontWeight: 500, color: "#64748b", textDecoration: "none" }} className="back-link">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
-            </svg>
-            Subira inyuma
-          </Link>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <Link href="/app" style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "1.3rem", fontWeight: 500, color: "#64748b", textDecoration: "none" }} className="back-link">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+              </svg>
+              Subira inyuma
+            </Link>
+            <button
+              onClick={logout}
+              style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "1.3rem", fontWeight: 500, color: "#ef4444", background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 8, padding: "6px 14px", cursor: "pointer" }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+              Sohoka
+            </button>
+          </div>
         </div>
       </header>
 
