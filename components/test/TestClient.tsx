@@ -179,13 +179,13 @@ export default function TestClient({ testType, testNumber, existing }: TestClien
             </p>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {wrong > 0 && (
+              {/* {wrong > 0 && (
                 <button onClick={retryMissed} className="btn btn-primary" style={{ height: 45, fontSize: "1.4rem", width: "100%" }}>
                   Subiramo ibyakunaniye ({wrong})
                 </button>
-              )}
+              )} */}
               <button onClick={restartTest} className="btn btn-outline" style={{ height: 45, fontSize: "1.4rem", width: "100%" }}>
-                Subiramo ikizami cyose
+                Subiramo ibyakunaniye 
               </button>
               {passed && (
                 <button onClick={() => router.push(`/levels?test=${testType}`)} className="btn" style={{ height: 45, fontSize: "1.4rem", width: "100%", background: "#f5f4fa", color: "#202842" }}>
